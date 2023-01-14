@@ -1,0 +1,55 @@
+header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 1px -1px rgb(0 0 0 / 25%);
+  z-index: 999;
+
+  nav {
+    width: 80%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .logo {
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      img {
+        height: 70%;
+        border-radius: 50%;
+      }
+    }
+
+    .title {
+      font-family: Sacramento;
+      font-size: 56px;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+
+      button {
+        cursor: pointer;
+        margin: 0px 10px;
+        background-color: transparent;
+        border: none;
+        font-family: Merriweather;
+        font-size: 16px;
+        padding: 10px;
+        transition: 0.3s;
+
+        &:hover {
+          border-radius: $border-radius;
+          background-color: $bg-color;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,36 @@
+aside {
+  padding: 10px;
+  height: calc(100% - #{10px});
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+
+  button,
+  a {
+    font-family: Merriweather;
+    font-size: 18px;
+    background-color: transparent;
+    border: none;
+    padding: 10px;
+    margin: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    text-decoration: none;
+    color: black;
+
+    &:hover {
+      background-color: darken($bg-color, 20);
+      border-radius: 5px;
+    }
+
+    img {
+      height: $font-size;
+      width: $font-size;
+      margin: 0px 5px;
+    }
+  }
+}

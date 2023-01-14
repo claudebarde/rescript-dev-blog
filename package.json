@@ -1,0 +1,27 @@
+{
+  "name": "rescript-project-template",
+  "version": "0.0.1",
+  "scripts": {
+    "res:build": "rescript",
+    "res:clean": "rescript clean",
+    "res:dev": "rescript build -w",
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "keywords": [
+    "rescript"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@rescript/react": "^0.11.0",
+    "firebase": "^9.15.0",
+    "rescript": "^10.1.1"
+  },
+  "devDependencies": {
+    "@jihchi/vite-plugin-rescript": "^5.0.0",
+    "@vitejs/plugin-react": "^3.0.1",
+    "sass": "^1.57.1",
+    "vite": "^4.0.4"
+  }
+}
