@@ -7,14 +7,13 @@ let make = () => {
         open Firestore
         // creates Firebase app instance
         let app = initialize_app(firebase_config)
-        app.name->Js.log
         // creates Firestore instance
         let db = get_firestore(app)
         // creates the collection instance
         let collection_ref = collection(db, "posts")
         // gets the snapshots
         let get_query_snapshots = async (coll) => {
-            let q = query(coll, [order_by("timestamp"), limit(5)])
+            let q = query(coll, [order_by("timestamp"), limit(4)])
             let query_snapshots = await get_docs(q)
             query_snapshots->QuerySnapshot.size->Js.log
             let docs_array = query_snapshots->QuerySnapshot.docs
@@ -33,16 +32,19 @@ let make = () => {
 
     
     if last_posts->Js.Array2.length === 0 {
-        <div>
+        <div className="home">
             {"Loading"->React.string}
         </div>
     } else {
-        <div>
-            {
-                last_posts
-                ->Js.Array2.map(post => <BlogPostPreview key=post.id post />)
-                ->React.array
-            }
+        <div className="home">
+            <h1>{"Latest posts"->React.string}</h1>
+            <div className="home__blogposts-preview">
+                {
+                    last_posts
+                    ->Js.Array2.map(post => <BlogPostPreview key=post.id post />)
+                    ->React.array
+                }
+            </div>
         </div>
     }
     

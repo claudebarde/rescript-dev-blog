@@ -6,6 +6,7 @@ let make = () => {
         <Introduction />
         <button>{"Tezos development"->React.string}</button>
         <button>{"Front-end development"->React.string}</button>
+        <hr />
         <a 
             href="https://www.twitter.com/claudebarde"
             target="_blank"

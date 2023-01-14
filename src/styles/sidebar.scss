@@ -23,7 +23,7 @@ aside {
     color: black;
 
     &:hover {
-      background-color: darken($bg-color, 20);
+      background-color: $orange-accent2;
       border-radius: 5px;
     }
 
@@ -32,5 +32,12 @@ aside {
       width: $font-size;
       margin: 0px 5px;
     }
+  }
+
+  hr {
+    width: 100%;
+    border: none;
+    border-bottom: solid 3px $orange-lighten2;
+    margin: 10px 0px;
   }
 }

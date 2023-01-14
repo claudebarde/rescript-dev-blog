@@ -2,6 +2,7 @@
 @import "./header.scss";
 @import "./footer.scss";
 @import "./sidebar.scss";
+@import "./home.scss";
 
 body {
   margin: 0;
@@ -37,12 +38,31 @@ main {
   gap: 20px;
   text-align: center;
   padding: 0px 20px 20px 20px;
-  border-bottom: solid 3px darken($bg-color, 20);
+  border-bottom: solid 3px $orange-lighten2;
   margin-bottom: 20px;
 
   & div.intro-card__title {
-    background-color: darken($bg-color, 10);
+    background-color: $orange-lighten2;
     padding: 5px;
     border-radius: 5px;
+  }
+}
+
+.tags {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  font-size: calc(#{$font-size} * 0.8);
+
+  .tag {
+    background-color: $orange-lighten4;
+    margin: 0px 5px;
+    padding: 5px;
+    border-radius: 5px;
+
+    &.tezos {
+      background-color: $tezos-blue;
+      color: white;
+    }
   }
 }

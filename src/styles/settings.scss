@@ -1,6 +1,22 @@
 @import url("https://fonts.googleapis.com/css2?family=Sacramento&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 
-$bg-color: #fff3e5;
+$orange-lighten5: #fff3e0;
+$orange-lighten4: #ffe0b2;
+$orange-lighten3: #ffcc80;
+$orange-lighten2: #ffb74d;
+$orange-lighten1: #ffa726;
+$orange: #ff9800;
+$orange-darken1: #fb8c00;
+$orange-darken2: #f57c00;
+$orange-darken3: #ef6c00;
+$orange-darken4: #e65100;
+$orange-accent1: #ffd180;
+$orange-accent2: #ffab40;
+$orange-accent3: #ff9100;
+$orange-accent4: #ff6d00;
+
 $border-radius: 20%;
 $font-size: 18px;
+$bg-color: $orange-lighten5;
+$tezos-blue: #0c60ff;

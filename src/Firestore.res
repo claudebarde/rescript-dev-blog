@@ -5,11 +5,12 @@ type firestore = {
 
 type collection_reference
 type query_constraint
+type timestamp = {nanoseconds: float, seconds: float}
 type document = {
   title: string,
   subtitle: string,
   header: string,
-  timestamp: string,
+  timestamp: timestamp,
   post: string,
   tags: array<string>
 }
