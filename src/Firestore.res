@@ -5,14 +5,25 @@ type firestore = {
 
 type collection_reference
 type query_constraint
-type document_metadata
+type document = {
+  title: string,
+  subtitle: string,
+  header: string,
+  timestamp: string,
+  post: string,
+  tags: array<string>
+}
+type doc_with_id = {
+  id: string,
+  data: document
+}
 
 module DocSnapshot = {
   type t
 
   @get external exists: t => bool = "exists"
   @get external id: t => string = "id"
-  @send external data: (t, unit) => 'a = "data"
+  @send external data: t => document = "data"
 }
 
 module QuerySnapshot = {
