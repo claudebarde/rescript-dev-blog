@@ -40,6 +40,6 @@ module QuerySnapshot = {
 @module("firebase/firestore") external doc: (firestore, string, string) => DocSnapshot.t = "doc"
 
 @module("firebase/firestore") @variadic external query: (collection_reference, array<query_constraint>) => collection_reference = "query"
-@module("firebase/firestore") external order_by: string => query_constraint = "orderBy"
+@module("firebase/firestore") @variadic external order_by: array<string> => query_constraint = "orderBy"
 @module("firebase/firestore") external limit: int => query_constraint = "limit"
 // @module("firebase/firestore") external where: string => 

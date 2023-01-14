@@ -13,7 +13,7 @@ let make = () => {
         let collection_ref = collection(db, "posts")
         // gets the snapshots
         let get_query_snapshots = async (coll) => {
-            let q = query(coll, [order_by("timestamp"), limit(4)])
+            let q = query(coll, [order_by(["timestamp", "desc"]), limit(4)])
             let query_snapshots = await get_docs(q)
             query_snapshots->QuerySnapshot.size->Js.log
             let docs_array = query_snapshots->QuerySnapshot.docs
