@@ -1,6 +1,6 @@
-# ReScript Project Template
+# Developer Blog with ReScript
 
-The only official ReScript starter template.
+My official developer blog written in ReScript
 
 ## Installation
 
@@ -17,5 +17,5 @@ npm install
 ## Run
 
 ```sh
-node src/Demo.bs.js
+npm run dev
 ```
