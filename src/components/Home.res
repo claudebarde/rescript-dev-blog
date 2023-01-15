@@ -5,7 +5,7 @@ let make = () => {
 
     React.useEffect0(() => {
         let fetch_docs = async () => {
-            let docs = switch await Utils.fetch_docs("previews") {
+            let docs = switch await Utils.fetch_previews() {
                 | data => switch data {
                     | None => []
                     | Some(val) => val

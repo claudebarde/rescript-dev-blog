@@ -3,6 +3,7 @@ type firestore = {
     @as("type") type_: string
 }
 
+type doc_snapshot_reference
 type collection_reference
 type query_constraint
 type timestamp = {nanoseconds: float, seconds: float}
@@ -11,7 +12,6 @@ type document = {
   subtitle: string,
   header: string,
   timestamp: timestamp,
-  post: string,
   tags: array<string>
 }
 type doc_with_id = {
@@ -22,7 +22,7 @@ type doc_with_id = {
 module DocSnapshot = {
   type t
 
-  @get external exists: t => bool = "exists"
+  @send external exists: t => bool = "exists"
   @get external id: t => string = "id"
   @send external data: t => document = "data"
 }
@@ -37,7 +37,8 @@ module QuerySnapshot = {
 @module("firebase/firestore") external get_firestore: (Firebase.firebaseApp) => firestore = "getFirestore"
 @module("firebase/firestore") external collection: (firestore, string) => collection_reference = "collection"
 @module("firebase/firestore") external get_docs: collection_reference => Js.Promise.t<QuerySnapshot.t> = "getDocs"
-@module("firebase/firestore") external doc: (firestore, string, string) => DocSnapshot.t = "doc"
+@module("firebase/firestore") external get_doc: doc_snapshot_reference => Js.Promise.t<DocSnapshot.t> = "getDoc"
+@module("firebase/firestore") external doc: (firestore, string, string) => doc_snapshot_reference = "doc"
 
 @module("firebase/firestore") @variadic external query: (collection_reference, array<query_constraint>) => collection_reference = "query"
 @module("firebase/firestore") @variadic external order_by: array<string> => query_constraint = "orderBy"
