@@ -30,6 +30,13 @@
       width: 70%;
       padding: 20px;
       box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+      transition: 0.3s;
+
+      &:hover {
+        box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.4);
+        width: 73%;
+        cursor: pointer;
+      }
 
       img {
         object-fit: cover;
@@ -43,6 +50,7 @@
         justify-content: space-between;
         align-items: stretch;
         padding: 5px 0px;
+        width: 95%;
 
         h3.blogpost-preview__details__title {
           margin: 0px;

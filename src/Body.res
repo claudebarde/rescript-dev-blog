@@ -6,7 +6,7 @@ let make = () => {
         <Sidebar />
         {
             switch url.path {
-            | list{"blogpost", id} => <BlogPost id />
+            | list{"blogpost", id, _} => <BlogPost id />
             | list{} => <Home />
             | _ => <PageNotFound />
             }

@@ -10,7 +10,7 @@ let make = () => {
         // creates Firestore instance
         let db = get_firestore(app)
         // creates the collection instance
-        let collection_ref = collection(db, "posts")
+        let collection_ref = collection(db, "previews")
         // gets the snapshots
         let get_query_snapshots = async (coll) => {
             let q = query(coll, [order_by(["timestamp", "desc"]), limit(4)])

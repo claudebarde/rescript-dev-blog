@@ -12,10 +12,12 @@ let make = () => {
 
   <header>
     <nav>
-        <div className="logo">
+        <a href="/" className="logo">
             <img src={logo} alt="logo" />
-        </div>
-        <div className="title">{"Will write code for tacos"->React.string}</div>
+        </a>
+        <a href="/" className="title">
+            {"Censorship resistant"->React.string}
+        </a>
         <div className="buttons">
             {
                 [articlesButton, linksButton, contactButton, searchButton]->React.array

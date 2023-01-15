@@ -1,6 +1,14 @@
 @react.component
 let make = (~post: Firestore.doc_with_id) => {
-    <div className="blogpost-preview">
+    let navigateToPost = _ => {
+        let formatted_title = 
+            post.data.title
+            ->Js.String2.toLowerCase
+            ->Js.String2.replaceByRe(%re("/\s+/g"), "-")
+        RescriptReactRouter.replace("/blogpost/" ++ post.id ++ "/" ++ formatted_title)
+    }
+
+    <div className="blogpost-preview" onClick={navigateToPost}>
         <div>
             <img src={post.data.header} alt="header" />
         </div>
