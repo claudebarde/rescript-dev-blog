@@ -12,7 +12,7 @@ let make = () => {
                 }
                 | exception JsError(_) => []
             }
-            set_last_posts(_ => docs)
+            Js.Global.setTimeout(() => set_last_posts(_ => docs), 2000)            
         }
 
         let _ = fetch_docs()
@@ -21,8 +21,28 @@ let make = () => {
     })
 
     if last_posts->Js.Array2.length == 0 {
-        <div className="home">
-            {"Loading"->React.string}
+        <div className="loading-home">
+            <div>
+                // https://www.rareprogrammer.com/bouncing-cube-css-loader/
+                <div className="cube-wrapper">
+                    <div className="cube">
+                        <div className="cube-faces">
+                            <div className="cube-face shadow"></div>
+                            <div className="cube-face bottom"></div>
+                            <div className="cube-face top"></div>
+                            <div className="cube-face left"></div>
+                            <div className="cube-face right"></div>
+                            <div className="cube-face back"></div>
+                            <div className="cube-face front"></div>
+                        </div>
+                    </div>
+                </div>
+                <div 
+                    style={ReactDOM.Style.make(~marginTop="100px", ())}
+                >
+                    {"Loading..."->React.string}
+                </div>
+            </div>
         </div>
     } else {
         <div className="home">
