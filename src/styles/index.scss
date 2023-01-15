@@ -3,6 +3,7 @@
 @import "./footer.scss";
 @import "./sidebar.scss";
 @import "./home.scss";
+@import "./blogpost.scss";
 
 body {
   margin: 0;
@@ -28,6 +29,7 @@ main {
   display: grid;
   grid-template-columns: 300px 1fr;
   background-color: $bg-color;
+  height: calc(100% - 10px * 2);
 }
 
 .intro-card {

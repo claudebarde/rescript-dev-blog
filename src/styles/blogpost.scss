@@ -1,0 +1,11 @@
+.blogpost {
+  height: 100%;
+  width: 60%;
+  margin: 0 auto;
+  overflow: auto;
+
+  a {
+    color: $tezos-blue;
+    text-decoration: underline;
+  }
+}

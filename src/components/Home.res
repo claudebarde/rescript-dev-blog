@@ -1,37 +1,26 @@
 @react.component
 let make = () => {
-    let (last_posts, set_last_posts) = React.useState(_ => [])
+    let initial_docs: array<Firestore.doc_with_id> = []
+    let (last_posts, set_last_posts) = React.useState(_ => initial_docs)
 
     React.useEffect0(() => {
-        open Firebase
-        open Firestore
-        // creates Firebase app instance
-        let app = initialize_app(firebase_config)
-        // creates Firestore instance
-        let db = get_firestore(app)
-        // creates the collection instance
-        let collection_ref = collection(db, "previews")
-        // gets the snapshots
-        let get_query_snapshots = async (coll) => {
-            let q = query(coll, [order_by(["timestamp", "desc"]), limit(4)])
-            let query_snapshots = await get_docs(q)
-            query_snapshots->QuerySnapshot.size->Js.log
-            let docs_array = query_snapshots->QuerySnapshot.docs
-            if docs_array->Js.Array2.length > 0 {
-                let docs = docs_array->Js.Array2.map(doc => {id: doc->DocSnapshot.id, data: doc->DocSnapshot.data})
-                set_last_posts(_ => docs)
-            } else {
-                ()
+        let fetch_docs = async () => {
+            let docs = switch await Utils.fetch_docs("previews") {
+                | data => switch data {
+                    | None => []
+                    | Some(val) => val
+                }
+                | exception JsError(_) => []
             }
+            set_last_posts(_ => docs)
         }
 
-        let _ = get_query_snapshots(collection_ref)
+        let _ = fetch_docs()
         
         None
     })
 
-    
-    if last_posts->Js.Array2.length === 0 {
+    if last_posts->Js.Array2.length == 0 {
         <div className="home">
             {"Loading"->React.string}
         </div>
