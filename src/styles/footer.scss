@@ -1,8 +1,8 @@
 footer {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  font-family: Sacramento;
-  font-size: 22px;
+  font-family: "VT323", monospace; //Sacramento;
+  font-size: $font-size;
   background-color: $bg-color;
 }

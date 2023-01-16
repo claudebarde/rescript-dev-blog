@@ -16,7 +16,7 @@ let make = () => {
             <img src={logo} alt="logo" />
         </a>
         <a href="/" className="title">
-            {"Censorship resistant"->React.string}
+            {"Most Significant Bit"->React.string}
         </a>
         <div className="buttons">
             {
