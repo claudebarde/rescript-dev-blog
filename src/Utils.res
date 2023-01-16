@@ -34,5 +34,25 @@ let fetch_preview = async (preview_id: string): option<Firestore.doc_with_id> =>
     } else {
         None
     }
+}
 
+let fetch_pictures = async (post_id: string, images: array<string>): option<array<Firebase_Storage.blogpost_img>> => {
+    open Firebase
+    open Firebase_Storage
+    // creates Firebase app instance
+    let app = initialize_app(firebase_config)
+    // initializes the cloud storage service
+    let storage = get_storage(app)
+    // loops through the images to create URLs
+    switch await images
+        ->Js.Array2.map(img => post_id ++ "/" ++ img)
+        ->Js.Array2.map(path => get_download_url(ref(storage, path)))
+        ->Js.Promise.all {
+            | data => {
+                data
+                ->Js.Array2.mapi((url, index) => { name: images[index], full_path: url })
+                ->Some
+            }
+            | exception JsError(_) => None
+        }
 }
