@@ -1,6 +1,35 @@
 module Markdown = {
   @react.component @module("react-markdown")
-  external make: (~children: React.element) => React.element = "default"
+  external make: (
+        ~children: React.element, 
+        ~linkTarget: option<string>, 
+        ~className: option<string>
+    ) => React.element = "default"
+}
+
+module Dom_element = {
+    type t = Dom.element
+
+    @get external text_content: t => string = "textContent"
+    @send external set_attribute: (t, string, string) => unit = "setAttribute"
+}
+@val external document: Dom.document = "document"
+@send external query_selector: ('a, string) => Js.Nullable.t<Dom_element.t> = "querySelector"
+@send external query_selector_all: ('a, string) => Js.Array2.array_like<Dom_element.t> = "querySelectorAll"
+@val external set_interval: (unit => unit, int) => float = "setInterval"
+@val external clear_interval: float => unit = "clearInterval"
+
+module IntersectionObserver = {
+    type t
+    type observer_options = {
+        root: Dom.element,
+        rootMargin: string,
+        threshold: float
+    }
+    type callback = (array<Dom.intersectionObserverEntry>, t) => unit
+
+    @new external new: (callback, observer_options) => t = "IntersectionObserver"
+    @send external observe: (t, Dom.element) => unit = "observe"
 }
 
 let fetch_previews = async (): option<array<Firestore.doc_with_id>> => {

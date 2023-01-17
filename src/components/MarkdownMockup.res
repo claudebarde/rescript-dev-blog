@@ -38,7 +38,7 @@ Now you understand why it is essential to have a lot of activity around a Saplin
 
 > Note: this mechanism may seem like a limitation of Sapling, but it is actually a limitation that exists on every blockchain implementing a zero-knowledge mechanism for anonymous transactions.
 
-# Designing the contract
+# Designing the contract
 The contract that we will write is a basic Sapling contract that will implement all the features of a Sapling contract: receiving and sending XTZ and allowing Sapling transactions within the pool. Creating the incoming transactions to the contract is outside of the scope of this tutorial, we will focus on how the contract handles them.
 
 As the contract will be very simple, there will be a single entrypoint to call. The entrypoint will receive a list of transactions and loop through it to apply them. According to the result of the transaction, the contract will exchange XTZ within the obfuscated Sapling pool or create a transfer to send XTZ to the required recipient.

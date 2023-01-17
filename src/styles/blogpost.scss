@@ -5,6 +5,7 @@
   grid-template-columns: 15% 60% 25%;
   overflow: auto;
   position: relative;
+  scroll-behavior: smooth;
 
   h1 {
     text-align: center;

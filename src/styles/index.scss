@@ -21,12 +21,12 @@ body {
 }
 
 header,
-main,
 footer {
   padding: 10px;
 }
 
 main {
+  padding: 0px 10px 20px 10px;
   display: grid;
   grid-template-columns: 300px 1fr;
   background-color: $bg-color;
@@ -65,6 +65,10 @@ main {
 
     &.tezos {
       background-color: $tezos-blue;
+      color: white;
+    }
+    &.taquito {
+      background-color: mediumseagreen;
       color: white;
     }
   }
