@@ -1,0 +1,51 @@
+.contact {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+
+  & > div {
+    padding: 10px;
+    margin: 20px auto;
+    width: 60%;
+    background-color: $orange-lighten4;
+    border: solid 2px $orange-lighten2;
+    border-radius: 10px;
+    text-align: center;
+  }
+
+  .contact__links-list {
+    text-align: left;
+    width: 10%;
+    margin: 0 auto;
+
+    p {
+      position: relative;
+    }
+
+    a {
+      color: $tezos-blue;
+      text-decoration: underline;
+    }
+
+    $icon-size: 32px;
+    img {
+      width: $icon-size;
+      height: $icon-size;
+      vertical-align: middle;
+      position: absolute;
+      left: calc(#{$icon-size} * -2);
+      transition: 0.3s;
+    }
+
+    a:hover {
+      img {
+        $new-icon-size: $icon-size * 1.5;
+        width: $new-icon-size;
+        height: $new-icon-size;
+        margin-left: calc((#{$new-icon-size} - #{$icon-size}) / -2);
+        margin-top: calc((#{$new-icon-size} - #{$icon-size}) / -2);
+      }
+    }
+  }
+}

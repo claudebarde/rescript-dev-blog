@@ -7,6 +7,7 @@ let make = () => {
         {
             switch url.path {
             | list{"blogpost", id, _} => <BlogPost id />
+            | list{"contact"} => <Contact />
             | list{} => <Home />
             | _ => <PageNotFound />
             }

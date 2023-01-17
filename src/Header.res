@@ -2,8 +2,7 @@
 
 @react.component
 let make = () => {
-    let articlesButton = <button key="articles-nav">{"Articles"->React.string}</button>
-    let linksButton = <button key="links-nav">{"Links"->React.string}</button>
+    let articlesButton = <button key="articles-nav" onClick={_ => RescriptReactRouter.replace("/contact")}>{"Articles"->React.string}</button>
     let contactButton = <button key="contact-nav">{"Contact"->React.string}</button>
     let searchButton = 
         <button key="search-nav">
@@ -20,7 +19,7 @@ let make = () => {
         </a>
         <div className="buttons">
             {
-                [articlesButton, linksButton, contactButton, searchButton]->React.array
+                [articlesButton, contactButton, searchButton]->React.array
             }
         </div>
     </nav>
