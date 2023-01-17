@@ -2,6 +2,7 @@
 let make = (~id: string) => {
     let (post_details, set_post_details) = React.useState(_ => None)
     let (titles, set_titles) = React.useState(_ => [])
+    let (markdown, set_markdown) = React.useState(_ => None)
 
     let title_to_anchor = (title: string): string => {
         title->Js.String2.toLowerCase->Js.String2.replaceByRe(%re("/\s+/g"), "-")
@@ -120,6 +121,7 @@ let make = (~id: string) => {
                 find_title(markdown, [])
             }
             set_titles(_ => titles)
+            set_markdown(_ => Some(markdown))
         }
 
         let _ = init()
@@ -167,7 +169,13 @@ let make = (~id: string) => {
                             </ul>
                         </div>
                         <Utils.Markdown>
-                            {MarkdownMockup.test->React.string}
+                            {
+                                switch markdown {
+                                    | None => "Loading the article..."
+                                    | Some(m) => m
+                                }
+                                ->React.string
+                            }
                         </Utils.Markdown>
                     </div>
             }
