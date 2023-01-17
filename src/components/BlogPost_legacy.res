@@ -1,6 +1,7 @@
 @react.component
 let make = (~id: string) => {
     let (post_details, set_post_details) = React.useState(_ => None)
+    let (html, set_html) = React.useState(_ => "")
     let (titles, set_titles) = React.useState(_ => [])
 
     let title_to_anchor = (title: string): string => {
@@ -120,6 +121,26 @@ let make = (~id: string) => {
                 find_title(markdown, [])
             }
             set_titles(_ => titles)
+            // renders the HTML
+            let rendered_markdown = MarkdownIt.render(MarkdownIt.createMarkdownIt(), markdown)
+            // makes links open in a different tab
+            let target_blank_links = (str: string): string => {
+                str->Js.String2.replaceByRe(%re("/<a href=\"(.*?)\">/g"), "<a href=\"$1\" target=\"_blank\" rel=\"noopener noreferrer nofollow\">")
+            }
+            // adds anchor links to h1 tags
+            let add_anchor_links = (str: string): string => {
+                titles
+                ->Js.Array2.reduce(
+                    (str, title) => {
+                        let to_replace = "<h1>" ++ title
+                        let replacement = "<h1 id=\"" ++ title->title_to_anchor ++ "\">" ++ title
+                        str->Js.String2.replace(to_replace, replacement)
+                    },
+                    str
+                )
+            }
+            let html = rendered_markdown->target_blank_links->add_anchor_links
+            set_html(_ => html)
         }
 
         let _ = init()
@@ -166,9 +187,7 @@ let make = (~id: string) => {
                                 }
                             </ul>
                         </div>
-                        <Utils.Markdown>
-                            {MarkdownMockup.test->React.string}
-                        </Utils.Markdown>
+                        <div dangerouslySetInnerHTML={{"__html": html}} />
                     </div>
             }
         }

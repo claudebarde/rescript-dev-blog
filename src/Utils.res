@@ -1,3 +1,8 @@
+module Markdown = {
+  @react.component @module("react-markdown")
+  external make: (~children: React.element) => React.element = "default"
+}
+
 let fetch_previews = async (): option<array<Firestore.doc_with_id>> => {
     open Firebase
     open Firestore
