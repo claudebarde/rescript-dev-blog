@@ -72,7 +72,7 @@
     text-decoration: underline;
   }
 
-  p {
+  .blogpost_body p {
     margin: calc(#{$font-size} * 2) 0px;
   }
 
@@ -117,5 +117,27 @@
   &::-webkit-scrollbar-thumb {
     border-radius: 0px;
     background-color: $orange-accent1;
+  }
+
+  .blogpost__right-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 20px;
+
+    & > div {
+      position: fixed;
+    }
+
+    #current-paragraph {
+      text-align: center;
+      font-size: calc(#{$font-size} * 0.8);
+    }
+
+    #percentage-read {
+      text-align: center;
+      font-size: calc(#{$font-size} * 0.8);
+    }
   }
 }

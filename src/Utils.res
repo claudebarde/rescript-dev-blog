@@ -11,6 +11,8 @@ module Dom_element = {
     type t = Dom.element
 
     @get external text_content: t => string = "textContent"
+    @get external id: t => string = "id"
+    @get external scroll_top: t => int = "scrollTop"
     @send external set_attribute: (t, string, string) => unit = "setAttribute"
 }
 @val external document: Dom.document = "document"
@@ -22,11 +24,17 @@ module Dom_element = {
 module IntersectionObserver = {
     type t
     type observer_options = {
-        root: Dom.element,
+        root: option<Dom.element>,
         rootMargin: string,
         threshold: float
     }
-    type callback = (array<Dom.intersectionObserverEntry>, t) => unit
+    type entry = {
+        isIntersecting: bool,
+        isVisible: bool,
+        target: Dom.element,
+        time: float
+    }
+    type callback = (array<entry>, t) => unit
 
     @new external new: (callback, observer_options) => t = "IntersectionObserver"
     @send external observe: (t, Dom.element) => unit = "observe"

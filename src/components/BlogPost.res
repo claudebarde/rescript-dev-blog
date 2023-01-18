@@ -4,7 +4,9 @@ let make = (~id: string) => {
     let (titles, set_titles) = React.useState(_ => [])
     let (markdown, set_markdown) = React.useState(_ => None)
     let (markdown_rendered_check, check_markdown_rendered) = React.useState(_ => None)
-    let (current_paragraph, set_current_paragraph) = React.useState(_ => None)
+    let (current_p_title, set_current_p_title) = React.useState(_ => None)
+    let (current_p_index, set_current_p_index) = React.useState(_ => None)
+    let (article_read, set_article_read) = React.useState(_ => 0)
 
     let title_to_anchor = (title: string): string => {
         title->Js.String2.toLowerCase->Js.String2.replaceByRe(%re("/\s+/g"), "-")
@@ -90,81 +92,14 @@ let make = (~id: string) => {
                 } else {
                     markdown
                 }
-            // searches for titles to build the content table
-            // let titles: array<string> = {
-            //     let rec find_title = (str: string, titles: array<string>): array<string> => {
-            //         switch Js.Re.exec_(%re("/#\s{1}(.*)\n/g"), str) {
-            //             | None => titles
-            //             | Some(matches) => {
-            //                 let capture = matches->Js.Re.captures
-            //                 if capture->Js.Array2.length > 0 {
-            //                     let title = capture[1]->Js.Nullable.toOption
-            //                     // pushes the new found title into the array
-            //                     switch title {
-            //                         | Some(title) => {
-            //                             let _ = titles->Js.Array2.push(title)
-            //                             // recursive call
-            //                             find_title(
-            //                                 matches
-            //                                 ->Js.Re.input
-            //                                 ->Js.String2.sliceToEnd(~from=(matches->Js.Re.index + title->Js.String2.length)), 
-            //                                 titles
-            //                             )
-            //                         }
-            //                         | _ => titles
-            //                     }                            
-            //                 } else {
-            //                     titles
-            //                 }
-            //             }
-            //         }
-            //     }
-
-            //     find_title(markdown, [])
-            // }
-            // set_titles(_ => titles)
-            set_markdown(_ => Some(markdown))
-
-            // setting up the Intersection Observer API
-            // let interval = Utils.set_interval(() => {
-            //     if titles->Js.Array2.length > 0 {
-            //         let formatted_titles = titles->Js.Array2.map(title => title->title_to_anchor)
-
-            //         let _ = {
-            //             open Utils
-            //             switch document->query_selector(".blogpost_body")->Js.Nullable.toOption {
-            //                 | None => "No .blogpost_body"->Js.log
-            //                 | Some(root) => {
-            //                     let observer_options: IntersectionObserver.observer_options = {
-            //                         root,
-            //                         rootMargin: "0px",
-            //                         threshold: 1.0
-            //                     }
-            //                     let callback = (entries, observer) => entries->Js.log
-
-            //                     let observer = IntersectionObserver.new(callback, observer_options)
-            //                     let target = document->query_selector("#understanding-sapling")->Js.Nullable.toOption
-            //                     switch target {
-            //                         | None => "No #understanding-sapling"->Js.log
-            //                         | Some(target) => {
-            //                             target->Js.log
-            //                             IntersectionObserver.observe(observer, target)
-            //                             set_current_paragraph(_ => Some("#understanding-sapling"))
-            //                         }
-            //                     }
-            //                 }
-            //             }
-            //         }
-            //     }
-            // }, 500)
-            // check_markdown_rendered(_ => Some(interval))    
+            set_markdown(_ => Some(markdown))  
 
             // setting up the Intersection Observer API
             let interval = Utils.set_interval(() => {
                 open Utils
                 switch document->query_selector(".blogpost_body")->Js.Nullable.toOption {
                     | None => "No .blogpost_body"->Js.log
-                    | Some(_) => set_current_paragraph(_ => Some(""))
+                    | Some(_) => set_current_p_title(_ => Some(""))
                 }
             }, 500)
             check_markdown_rendered(_ => Some(interval))
@@ -176,7 +111,7 @@ let make = (~id: string) => {
     })
 
     React.useEffect(() => {
-        switch (current_paragraph, markdown_rendered_check) {
+        switch (current_p_title, markdown_rendered_check) {
             | (Some(_), Some(interval)) => {
                 let _ = Utils.clear_interval(interval)
                 let _ = {
@@ -199,21 +134,37 @@ let make = (~id: string) => {
                                 ->Js.Array2.map(el => el->Dom_element.set_attribute("id", el->Dom_element.text_content->title_to_anchor))
                             // setting up the observer
                             let observer_options: IntersectionObserver.observer_options = {
-                                root,
+                                root: None,
                                 rootMargin: "0px",
                                 threshold: 1.0
                             }
-                            let callback = (entries, observer) => entries->Js.log
+                            let callback: (array<IntersectionObserver.entry>, IntersectionObserver.t) => () = 
+                                (entries, _) => {
+                                    let _ = entries->Js.Array2.map(entry => {
+                                        //entry->Js.log
+                                        if entry.isIntersecting {
+                                            // finds the title index
+                                            let p_title = entry.target->Dom_element.text_content
+                                            let index = titles->Js.Array2.findIndex(el => el === p_title)
+                                            if index !== -1 {
+                                                set_current_p_index(_ => Some(index))
+                                                set_current_p_title(_ => Some(p_title))
+                                            }                                            
+                                        } else if !entry.isIntersecting && entry.target->Dom_element.id === titles[0]->title_to_anchor {
+                                            // user is scrolling back to the top
+                                            set_current_p_index(_ => None)
+                                            set_current_p_title(_ => None)
+                                        }
+                                    })
+                                    ()
+                                }
 
                             let observer = IntersectionObserver.new(callback, observer_options)
-                            let target = document->query_selector("#understanding-sapling")->Js.Nullable.toOption
-                            switch target {
-                                | None => "No #understanding-sapling"->Js.log
-                                | Some(target) => {
-                                    IntersectionObserver.observe(observer, target)
-                                    set_current_paragraph(_ => Some("#understanding-sapling"))
-                                }
-                            }
+                            let _ = 
+                                root
+                                ->query_selector_all("h1")
+                                ->Js.Array2.from
+                                ->Js.Array2.map(el => IntersectionObserver.observe(observer, el))
 
                             ()
                         }
@@ -227,7 +178,16 @@ let make = (~id: string) => {
         None
     })
 
-    <div className="blogpost" id="blogpost">
+    <div 
+        className="blogpost" 
+        id="blogpost" 
+        onScroll=((ev: ReactEvent.UI.t) => {
+            let height = ReactEvent.UI.target(ev)["scrollHeight"]->Js.Int.toFloat -. ReactEvent.UI.target(ev)["clientHeight"]->Js.Int.toFloat
+            let scrolled = ReactEvent.UI.target(ev)["scrollHeight"]->Js.Int.toFloat -. ReactEvent.UI.target(ev)["clientHeight"]->Js.Int.toFloat -. ReactEvent.UI.target(ev)["scrollTop"]->Js.Int.toFloat
+            let percentage_read = (((height -. scrolled) /. height) *. 100.0)->Belt.Float.toInt
+            set_article_read(_ => percentage_read)
+        })
+    >
         <div />
         {
             switch post_details {
@@ -279,15 +239,31 @@ let make = (~id: string) => {
                     </div>
             }
         }
-        <div>
-            <p>
-                {
-                    switch current_paragraph {
-                        | None => React.null
-                        | Some(p) => p->React.string
-                    }
-                }
-            </p>
+        <div className="blogpost__right-column">
+            <div>
+                <p id="percentage-read">
+                    {article_read->React.int} {"\u00A0% read"->React.string}
+                </p>
+                <p id="current-paragraph">
+                    <span>
+                        {
+                            switch current_p_index {
+                                | None => React.null
+                                | Some(i) => ("Part\u00A0" ++ (i + 1)->Js.Int.toString ++ ":")->React.string
+                            }
+                        }
+                    </span>
+                    <br />
+                    <span>
+                        {
+                            switch current_p_title {
+                                | None => React.null
+                                | Some(p) => p->React.string
+                            }
+                        }
+                    </span>
+                </p>
+            </div>
         </div>
     </div>
 }
