@@ -1,3 +1,5 @@
+type scroll_direction = Up(float) | Down(float) | Unknown_dir // each breanch saves the last known scroll position
+
 @react.component
 let make = (~id: string) => {
     let (post_details, set_post_details) = React.useState(_ => None)
@@ -7,9 +9,43 @@ let make = (~id: string) => {
     let (current_p_title, set_current_p_title) = React.useState(_ => None)
     let (current_p_index, set_current_p_index) = React.useState(_ => None)
     let (article_read, set_article_read) = React.useState(_ => 0)
+    let scroll_direction = React.useRef(Unknown_dir)
 
     let title_to_anchor = (title: string): string => {
         title->Js.String2.toLowerCase->Js.String2.replaceByRe(%re("/\s+/g"), "-")
+    }
+
+    let handle_scroll = (ev: ReactEvent.UI.t) => {
+        // sets the percentage of the article read until now
+        let height = ReactEvent.UI.target(ev)["scrollHeight"]->Js.Int.toFloat -. ReactEvent.UI.target(ev)["clientHeight"]->Js.Int.toFloat
+        let scrolled = ReactEvent.UI.target(ev)["scrollHeight"]->Js.Int.toFloat -. ReactEvent.UI.target(ev)["clientHeight"]->Js.Int.toFloat -. ReactEvent.UI.target(ev)["scrollTop"]->Js.Int.toFloat
+        let percentage_read = (((height -. scrolled) /. height) *. 100.0)->Belt.Float.toInt
+        set_article_read(_ => percentage_read)
+        // saves scroll direction
+        let new_scroll_direction =
+            switch scroll_direction.current {
+                | Up(prev_scroll) => {
+                    if prev_scroll > scrolled {
+                        // user is scrolling down
+                        Down(scrolled)
+                    } else {
+                        Up(scrolled)
+                    }
+                }
+                | Down(prev_scroll) => {
+                    if prev_scroll > scrolled {
+                        // user is scrolling down
+                        Down(scrolled)
+                    } else {
+                        Up(scrolled)
+                    }
+                }
+                | Unknown_dir => {
+                    // initial value before any scroll happened
+                    Down(scrolled)
+                }
+            }
+        scroll_direction.current = new_scroll_direction
     }
 
     React.useEffect0(() => {
@@ -131,7 +167,10 @@ let make = (~id: string) => {
                                 root
                                 ->query_selector_all("h1")
                                 ->Js.Array2.from
-                                ->Js.Array2.map(el => el->Dom_element.set_attribute("id", el->Dom_element.text_content->title_to_anchor))
+                                ->Js.Array2.mapi((el, index) => {
+                                    el->Dom_element.set_attribute("id", el->Dom_element.text_content->title_to_anchor)
+                                    el->Dom_element.set_attribute("data-order", "title-" ++ index->Belt.Int.toString)
+                                })
                             // setting up the observer
                             let observer_options: IntersectionObserver.observer_options = {
                                 root: None,
@@ -141,19 +180,50 @@ let make = (~id: string) => {
                             let callback: (array<IntersectionObserver.entry>, IntersectionObserver.t) => () = 
                                 (entries, _) => {
                                     let _ = entries->Js.Array2.map(entry => {
-                                        //entry->Js.log
                                         if entry.isIntersecting {
                                             // finds the title index
                                             let p_title = entry.target->Dom_element.text_content
                                             let index = titles->Js.Array2.findIndex(el => el === p_title)
                                             if index !== -1 {
                                                 set_current_p_index(_ => Some(index))
-                                                set_current_p_title(_ => Some(p_title))
+                                                set_current_p_title(_ => Some(p_title))                                                 
                                             }                                            
                                         } else if !entry.isIntersecting && entry.target->Dom_element.id === titles[0]->title_to_anchor {
                                             // user is scrolling back to the top
-                                            set_current_p_index(_ => None)
-                                            set_current_p_title(_ => None)
+                                            switch scroll_direction.current {
+                                                | Up(_) => {
+                                                    // resets right column when user passes the first title
+                                                    set_current_p_index(_ => None)
+                                                    set_current_p_title(_ => None)
+                                                }
+                                                | _ => ()
+                                            }                                            
+                                        } else {
+                                            switch scroll_direction.current {
+                                                | Up(_) => {
+                                                    // data-order has format `title-{index}`
+                                                    let data_order = 
+                                                        switch entry.target->Dom_element.get_attribute("data-order")->Js.Nullable.toOption {
+                                                            | None => -1
+                                                            | Some(data_order) => {
+                                                                let order = data_order->Js.String2.split("-")
+                                                                if order->Js.Array2.length === 2 {
+                                                                    switch order[1]->Belt.Int.fromString {
+                                                                        | None => -1
+                                                                        | Some(res) => res
+                                                                    }
+                                                                } else {
+                                                                    -1
+                                                                }
+                                                            }
+                                                        }
+                                                        if data_order !== -1 && data_order < titles->Js.Array2.length {
+                                                            set_current_p_index(_ => Some(data_order - 1))
+                                                            set_current_p_title(_ => Some(titles[data_order - 1]))  
+                                                        }
+                                                }
+                                                | _ => ()
+                                            }
                                         }
                                     })
                                     ()
@@ -181,19 +251,14 @@ let make = (~id: string) => {
     <div 
         className="blogpost" 
         id="blogpost" 
-        onScroll=((ev: ReactEvent.UI.t) => {
-            let height = ReactEvent.UI.target(ev)["scrollHeight"]->Js.Int.toFloat -. ReactEvent.UI.target(ev)["clientHeight"]->Js.Int.toFloat
-            let scrolled = ReactEvent.UI.target(ev)["scrollHeight"]->Js.Int.toFloat -. ReactEvent.UI.target(ev)["clientHeight"]->Js.Int.toFloat -. ReactEvent.UI.target(ev)["scrollTop"]->Js.Int.toFloat
-            let percentage_read = (((height -. scrolled) /. height) *. 100.0)->Belt.Float.toInt
-            set_article_read(_ => percentage_read)
-        })
+        onScroll=(handle_scroll)
     >
         <div />
         {
             switch post_details {
                 | None => <div>{"Loading"->React.string}</div>
                 | Some(details) => 
-                    <div>
+                    <div className="blogpost__middle-column">
                         <h1 className="blogpost__title">
                             {details.data.title->React.string}
                         </h1>

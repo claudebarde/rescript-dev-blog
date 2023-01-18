@@ -14,6 +14,7 @@ module Dom_element = {
     @get external id: t => string = "id"
     @get external scroll_top: t => int = "scrollTop"
     @send external set_attribute: (t, string, string) => unit = "setAttribute"
+    @send external get_attribute: (t, string) => Js.Nullable.t<string> = "getAttribute"
 }
 @val external document: Dom.document = "document"
 @send external query_selector: ('a, string) => Js.Nullable.t<Dom_element.t> = "querySelector"

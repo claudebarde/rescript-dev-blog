@@ -2,7 +2,7 @@
   height: 100%;
   width: 100%;
   display: grid;
-  grid-template-columns: 15% 60% 25%;
+  grid-template-columns: 15% 70% 15%;
   overflow: auto;
   position: relative;
   scroll-behavior: smooth;
@@ -67,6 +67,10 @@
     }
   }
 
+  .blogpost__middle-column {
+    padding: 0px 50px;
+  }
+
   a {
     color: $tezos-blue;
     text-decoration: underline;
@@ -124,20 +128,13 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    padding-left: 20px;
+    font-family: "VT323", monospace;
+    font-size: calc(#{$font-size} * 0.9);
+    text-align: center;
 
     & > div {
       position: fixed;
-    }
-
-    #current-paragraph {
-      text-align: center;
-      font-size: calc(#{$font-size} * 0.8);
-    }
-
-    #percentage-read {
-      text-align: center;
-      font-size: calc(#{$font-size} * 0.8);
+      padding: 0px 20px;
     }
   }
 }
