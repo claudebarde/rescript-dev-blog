@@ -40,14 +40,37 @@ main {
   align-items: center;
   gap: 20px;
   text-align: center;
-  padding: 0px 20px 20px 20px;
+  padding: 0px 20px 10px 20px;
   border-bottom: solid 3px $orange-lighten2;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 
   & div.intro-card__title {
     background-color: $orange-lighten2;
     padding: 5px;
     border-radius: 5px;
+  }
+
+  p {
+    margin: 5px;
+  }
+
+  ul {
+    padding: 0px;
+    margin: 10px 20px;
+    list-style: none;
+
+    li {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 5px;
+    }
+
+    img {
+      height: 28px;
+      width: 28px;
+      margin-right: 10px;
+    }
   }
 }
 
