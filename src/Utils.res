@@ -103,21 +103,40 @@ let fetch_preview_featured = async (): option<Firestore.doc_with_id> => {
 
 let fetch_pictures = async (post_id: string, images: array<string>): option<array<Firebase_Storage.blogpost_img>> => {
     open Firebase
-    open Firebase_Storage
     // creates Firebase app instance
     let app = initialize_app(firebase_config)
     // initializes the cloud storage service
-    let storage = get_storage(app)
+    let storage = Firebase_Storage.get_storage(app)
     // loops through the images to create URLs
     switch await images
         ->Js.Array2.map(img => post_id ++ "/" ++ img)
-        ->Js.Array2.map(path => get_download_url(ref(storage, path)))
+        ->Js.Array2.map(path => Firebase_Storage.get_download_url(Firebase_Storage.ref(storage, path)))
         ->Js.Promise.all {
             | data => {
                 data
-                ->Js.Array2.mapi((url, index) => { name: images[index], full_path: url })
+                ->Js.Array2.mapi((url, index) => ({ name: images[index], full_path: url }: Firebase_Storage.blogpost_img))
                 ->Some
             }
             | exception JsError(_) => None
         }
+}
+
+let fetch_posts_by_tag = async (tag: string): option<array<Firestore.DocSnapshot.t>> => {
+    open Firebase
+    open Firestore
+    // creates Firebase app instance
+    let app = initialize_app(firebase_config)
+    // creates Firestore instance
+    let db = get_firestore(app)
+    // creates the collection reference
+    let collection_ref = collection(db, "previews")
+    // builds the query
+    let q = query(collection_ref, [where_string("tags", "array-contains", tag), order_by(["timestamp", "desc"])])
+    // gets the snapshot
+    let doc_snaps = await get_docs(q)
+    if doc_snaps->QuerySnapshot.size > 0 {
+        doc_snaps->QuerySnapshot.docs->Some
+    } else {
+        None
+    }
 }

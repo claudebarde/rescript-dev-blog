@@ -6,8 +6,59 @@ aside {
   justify-content: flex-start;
   align-items: stretch;
 
+  .intro-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    text-align: center;
+    padding: 0px 20px 10px 20px;
+    border-bottom: solid 3px $orange-lighten2;
+    margin-bottom: 10px;
+
+    & div.intro-card__title {
+      background-color: $orange-lighten2;
+      padding: 5px;
+      border-radius: 5px;
+    }
+
+    p {
+      margin: 5px;
+    }
+
+    ul {
+      padding: 0px;
+      margin: 10px 20px;
+      list-style: none;
+
+      li {
+        padding: 5px;
+        text-align: left;
+      }
+
+      img {
+        height: 28px;
+        width: 28px;
+        margin-right: 10px;
+        vertical-align: middle;
+      }
+
+      a {
+        color: black;
+        text-decoration: none;
+        transition: 0.3s;
+
+        &:hover {
+          color: $tezos-blue;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+
   button,
-  a {
+  a:not(.intro-card__link) {
     font-family: Merriweather;
     font-size: 18px;
     background-color: transparent;

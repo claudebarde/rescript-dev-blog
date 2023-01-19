@@ -67,7 +67,7 @@ let make = () => {
                         <>
                             <h1>{"Featured article"->React.string}</h1>
                             <div className="home__blogposts-preview">
-                                <BlogPostPreview key=post.id post preview_pos=0 />
+                                <BlogPostPreview key=post.id post preview_pos=0 has_animation=true />
                             </div>
                         </>
                     }
@@ -78,7 +78,7 @@ let make = () => {
             <div className="home__blogposts-preview">
                 {
                     last_posts
-                    ->Js.Array2.mapi((post, index) => <BlogPostPreview key=post.id post preview_pos=index />)
+                    ->Js.Array2.mapi((post, index) => <BlogPostPreview key=post.id post preview_pos=index has_animation=true />)
                     ->React.array
                 }
             </div>

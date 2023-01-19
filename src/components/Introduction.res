@@ -14,10 +14,46 @@ let make = () => {
         <div className="intro-card__languages">
             <p>{"My favorite languages/frameworks:"->React.string}</p>
             <ul>
-                <li><img src=rust_logo alt="Rust logo" />{"Rust"->React.string}</li>
-                <li><img src=svelte_logo alt="Svelte logo" />{"Svelte"->React.string}</li>
-                <li><img src=rescript_logo alt="ReScript logo" />{"ReScript"->React.string}</li>
-                <li><img src=michelson_logo alt="Michelson logo" />{"Michelson"->React.string}</li>
+                <li>
+                    <a 
+                        href="https://www.rust-lang.org/"
+                        target="_blank"
+                        rel="noopener noreferrer nofollow"
+                         className="intro-card__link"
+                    >
+                        <img src=rust_logo alt="Rust logo" />{"Rust"->React.string}
+                    </a>
+                </li>
+                <li>
+                    <a 
+                        href="https://www.svelte.dev/"
+                        target="_blank"
+                        rel="noopener noreferrer nofollow"
+                         className="intro-card__link"
+                    >
+                        <img src=svelte_logo alt="Svelte logo" />{"Svelte"->React.string}
+                    </a>
+                </li>
+                <li>
+                    <a 
+                        href="https://rescript-lang.org"
+                        target="_blank"
+                        rel="noopener noreferrer nofollow"
+                         className="intro-card__link"
+                    >
+                        <img src=rescript_logo alt="ReScript logo" />{"ReScript"->React.string}
+                    </a>
+                </li>
+                <li>
+                    <a 
+                        href="https://tezos.gitlab.io/active/michelson.html"
+                        target="_blank"
+                        rel="noopener noreferrer nofollow"
+                         className="intro-card__link"
+                    >
+                        <img src=michelson_logo alt="Michelson logo" />{"Michelson"->React.string}
+                    </a>
+                </li>
             </ul>
         </div>
     </div>

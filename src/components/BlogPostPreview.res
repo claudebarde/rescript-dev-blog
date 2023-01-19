@@ -1,5 +1,7 @@
 @react.component
-let make = (~post: Firestore.doc_with_id, ~preview_pos: int) => {
+let make = (~post: Firestore.doc_with_id, ~preview_pos: int, ~has_animation: bool) => {
+    let (is_hovered, set_is_hovered) = React.useState(_ => false)
+
     let navigateToPost = _ => {
         let formatted_title = 
             post.data.title
@@ -9,12 +11,28 @@ let make = (~post: Firestore.doc_with_id, ~preview_pos: int) => {
     }
 
     <div 
-        className="blogpost-preview" 
-        style={ReactDOM.Style.make(~animationDelay = (preview_pos * -100)->Belt.Int.toString ++ "ms", ())} 
-        onClick={navigateToPost}
+        className={"blogpost-preview " ++ if has_animation { "animate" } else { "" }}
+        style={ReactDOM.Style.make(~animationDelay = (preview_pos * -100)->Belt.Int.toString ++ "ms", ())}
+        onMouseEnter={_ => set_is_hovered(_ => true)}
+        onMouseLeave={_ => set_is_hovered(_ => false)}
     >
-        <div className="blogpost-preview__image">
-            <img src={post.data.header} alt="header" />
+        <div className={"blogpost-preview__image"}>
+            {
+                if is_hovered {
+                    <div className="blogpost-preview__read-button">
+                        <button onClick={navigateToPost}>
+                            {"Read"->React.string}
+                        </button>
+                    </div>
+                } else {
+                    React.null
+                }
+            }
+            <img 
+                src={post.data.header} 
+                alt="header"
+                className={{ if is_hovered { "read" } else { "" } }}
+            />
         </div>
         <div className="blogpost-preview__details">
             <h3 className="blogpost-preview__details__title">{post.data.title->React.string}</h3>

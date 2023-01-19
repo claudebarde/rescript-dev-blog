@@ -5,8 +5,12 @@
 let make = () => {
     <aside>
         <Introduction />
-        <button>{"Tezos development"->React.string}</button>
-        <button>{"Front-end development"->React.string}</button>
+        <button onClick={_ => RescriptReactRouter.replace("/articles/Tezos")}>
+            {"Tezos development"->React.string}
+        </button>
+        <button onClick={_ => RescriptReactRouter.replace("/articles/front-end")}>
+            {"Front-end development"->React.string}
+        </button>
         <hr />
         <a 
             href="https://github.com/claudebarde/rescript-dev-blog"
