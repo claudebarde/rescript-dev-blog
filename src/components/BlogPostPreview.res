@@ -1,5 +1,5 @@
 @react.component
-let make = (~post: Firestore.doc_with_id) => {
+let make = (~post: Firestore.doc_with_id, ~preview_pos: int) => {
     let navigateToPost = _ => {
         let formatted_title = 
             post.data.title
@@ -8,7 +8,11 @@ let make = (~post: Firestore.doc_with_id) => {
         RescriptReactRouter.replace("/blogpost/" ++ post.id ++ "/" ++ formatted_title)
     }
 
-    <div className="blogpost-preview" onClick={navigateToPost}>
+    <div 
+        className="blogpost-preview" 
+        style={ReactDOM.Style.make(~animationDelay = (preview_pos * -100)->Belt.Int.toString ++ "ms", ())} 
+        onClick={navigateToPost}
+    >
         <div className="blogpost-preview__image">
             <img src={post.data.header} alt="header" />
         </div>

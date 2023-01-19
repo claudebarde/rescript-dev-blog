@@ -79,6 +79,28 @@ let fetch_preview = async (preview_id: string): option<Firestore.doc_with_id> =>
     }
 }
 
+let fetch_preview_featured = async (): option<Firestore.doc_with_id> => {
+    open Firebase
+    open Firestore
+    // creates Firebase app instance
+    let app = initialize_app(firebase_config)
+    // creates Firestore instance
+    let db = get_firestore(app)
+    // creates the collection reference
+    let collection_ref = collection(db, "previews")
+    // builds the query
+    let q = query(collection_ref, [where_bool("featured", "==", true)])
+    // gets the snapshot
+    let doc_snap = await get_docs(q)
+    if doc_snap->QuerySnapshot.size === 1 {
+        let doc = doc_snap->QuerySnapshot.docs
+
+        { id: doc[0]->DocSnapshot.id, data: doc[0]->DocSnapshot.data }->Some
+    } else {
+        None
+    }
+}
+
 let fetch_pictures = async (post_id: string, images: array<string>): option<array<Firebase_Storage.blogpost_img>> => {
     open Firebase
     open Firebase_Storage
