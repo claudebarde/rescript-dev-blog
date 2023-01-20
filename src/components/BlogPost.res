@@ -253,7 +253,30 @@ let make = (~id: string) => {
         id="blogpost" 
         onScroll=(handle_scroll)
     >
-        <div />
+        <div className="blogpost__left-column">
+            {
+                switch post_details {
+                    | Some(post) =>
+                        <div>
+                            <p>
+                            <span>{"Share"->React.string}</span>
+                            <br />
+                            <Utils.TwitterShare 
+                                url={
+                                    open Utils
+                                    Window.window->Window.location->Window.href
+                                }
+                                title={post.data.title ++ " by @claudebarde\n"}
+                                hashtags=post.data.tags
+                            >
+                                <Utils.TwitterShareIcon size=40 round=true />
+                            </Utils.TwitterShare>
+                            </p>
+                        </div>
+                    | None => React.null
+                }
+            }
+        </ div>
         {
             switch post_details {
                 | None => <div>{"Loading"->React.string}</div>

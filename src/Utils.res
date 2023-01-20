@@ -7,6 +7,32 @@ module Markdown = {
     ) => React.element = "default"
 }
 
+module TwitterShare = {
+    @react.component @module("react-share")
+    external make: (
+        ~children: React.element,
+        ~url: string,
+        ~title: string,
+        ~hashtags: array<string>
+    ) => React.element = "TwitterShareButton"
+}
+module TwitterShareIcon = {
+    @react.component @module("react-share")
+    external make: (
+        ~size: int,
+        ~round: bool
+    ) => React.element = "TwitterIcon"
+}
+
+module Window = {
+    type t = Dom.window
+    type location = { href: string }
+    
+    @val external window: t = "window"
+    @get external location: t => location = "location"
+    @get external href: location => string = "href"
+}
+
 module Dom_element = {
     type t = Dom.element
 
