@@ -11,10 +11,10 @@ let make = () => {
 
   <header>
     <nav>
-        <a href="/" className="logo">
+        <a href="#" className="logo" onClick={_ => RescriptReactRouter.replace("/")}>
             <img src={logo} alt="logo" />
         </a>
-        <a href="/" className="title">
+        <a href="#" className="title" onClick={_ => RescriptReactRouter.replace("/")}>
             {"Most Significant Bit"->React.string}
         </a>
         <div className="buttons">

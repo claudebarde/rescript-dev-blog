@@ -1,8 +1,9 @@
 @react.component
 let make = () => {
-    let initial_docs: array<Firestore.doc_with_id> = []
-    let (last_posts, set_last_posts) = React.useState(_ => initial_docs)
-    let (featured_post, set_featured_post) = React.useState(_ => None)
+    // let initial_docs: array<Firestore.doc_with_id> = []
+    // let (last_posts, set_last_posts) = React.useState(_ => initial_docs)
+    // let (featured_post, set_featured_post) = React.useState(_ => None)
+    let context = React.useContext(Context.context)
 
     React.useEffect0(() => {
         let fetch_docs = async () => {
@@ -11,7 +12,7 @@ let make = () => {
                 | data => data
                 | exception JsError(_) => None
             }
-            set_featured_post(_ => featured_post)
+            context.set_featured_post(_ => featured_post)
             // fetches previews
             let docs = switch await Utils.fetch_previews() {
                 | data => switch data {
@@ -27,15 +28,17 @@ let make = () => {
                     | None => docs
                 }
             // setTimeout is used to let the initial animation play for x seconds
-            Js.Global.setTimeout(() => set_last_posts(_ => docs), 2000)            
+            Js.Global.setTimeout(() => context.set_last_posts(_ => docs), 2000)            
         }
 
-            let _ = fetch_docs()
+        // if context.last_posts->Js.Array2.length === 0 {
+        // }
+        let _ = fetch_docs()
         
         None
     })
 
-    if last_posts->Js.Array2.length == 0 {
+    if context.last_posts->Js.Array2.length == 0 {
         <div className="loading-home">
             <div>
                 // https://www.rareprogrammer.com/bouncing-cube-css-loader/
@@ -62,7 +65,7 @@ let make = () => {
     } else {
         <div className="home">
             {
-                switch featured_post {
+                switch context.featured_post {
                     | Some(post) => {
                         <>
                             <h1>{"Featured article"->React.string}</h1>
@@ -77,7 +80,7 @@ let make = () => {
             <h1>{"Latest posts"->React.string}</h1>
             <div className="home__blogposts-preview">
                 {
-                    last_posts
+                    context.last_posts
                     ->Js.Array2.mapi((post, index) => <BlogPostPreview key=post.id post preview_pos=index has_animation=true />)
                     ->React.array
                 }
