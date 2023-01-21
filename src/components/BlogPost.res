@@ -258,19 +258,39 @@ let make = (~id: string) => {
                 switch post_details {
                     | Some(post) =>
                         <div>
-                            <p>
-                            <span>{"Share"->React.string}</span>
-                            <br />
-                            <Utils.TwitterShare 
-                                url={
-                                    open Utils
-                                    Window.window->Window.location->Window.href
-                                }
-                                title={post.data.title ++ " by @claudebarde\n"}
-                                hashtags=post.data.tags
-                            >
-                                <Utils.TwitterShareIcon size=40 round=true />
-                            </Utils.TwitterShare>
+                            <p className="share-buttons">
+                                <span>{"Share"->React.string}</span>
+                                <Utils.TwitterShare 
+                                    url={
+                                        open Utils
+                                        Window.window->Window.location->Window.href
+                                    }
+                                    title={post.data.title ++ " by @claudebarde\n"}
+                                    hashtags=post.data.tags
+                                >
+                                    <Utils.TwitterShareIcon size=40 round=true />
+                                </Utils.TwitterShare>
+                                <Utils.LinkedinShare 
+                                    url={
+                                        open Utils
+                                        Window.window->Window.location->Window.href
+                                    }
+                                    title={post.data.title ++ " by @claudebarde\n"}
+                                    summary=post.data.subtitle
+                                    source="MostSignificantBit"
+                                >
+                                    <Utils.LinkedinShareIcon size=40 round=true />
+                                </Utils.LinkedinShare>
+                                <Utils.FacebookShare 
+                                    url={
+                                        open Utils
+                                        Window.window->Window.location->Window.href
+                                    }
+                                    quote={post.data.title ++ " by @claudebarde\n"}
+                                    hashtags=post.data.tags
+                                >
+                                    <Utils.FacebookShareIcon size=40 round=true />
+                                </Utils.FacebookShare>
                             </p>
                         </div>
                     | None => React.null
@@ -315,7 +335,11 @@ let make = (~id: string) => {
                                 }
                             </ul>
                         </div>
-                        <Utils.Markdown linkTarget=Some("_blank") className=Some("blogpost_body")>
+                        <Utils.Markdown 
+                            linkTarget=Some("_blank") 
+                            className=Some("blogpost_body")
+                            components=None
+                        >
                             {
                                 switch markdown {
                                     | None => "Loading the article..."

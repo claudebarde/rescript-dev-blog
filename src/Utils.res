@@ -1,10 +1,33 @@
+module SyntaxHighlighter = {
+    type style_obj
+    type props_ = {
+        children: React.element,
+        style: style_obj,
+        language: string,
+        @as("PreTag") preTag: string
+    }
+
+    @react.component @module("react-syntax-highlighter")
+    external make: props_ => React.element = "Prism"
+}
+
 module Markdown = {
-  @react.component @module("react-markdown")
-  external make: (
-        ~children: React.element, 
-        ~linkTarget: option<string>, 
-        ~className: option<string>
-    ) => React.element = "default"
+    type code_args = {
+        inline: bool, 
+        className: string, 
+        children: React.element
+    }
+    type components = {
+        code: code_args => React.element
+    }
+
+    @react.component @module("react-markdown")
+    external make: (
+            ~children: React.element, 
+            ~linkTarget: option<string>, 
+            ~className: option<string>,
+            ~components: option<components>
+        ) => React.element = "default"
 }
 
 module TwitterShare = {
@@ -23,6 +46,39 @@ module TwitterShareIcon = {
         ~round: bool
     ) => React.element = "TwitterIcon"
 }
+module FacebookShare = {
+    @react.component @module("react-share")
+    external make: (
+        ~children: React.element,
+        ~url: string,
+        ~quote: string,
+        ~hashtags: array<string>
+    ) => React.element = "FacebookShareButton"
+}
+module FacebookShareIcon = {
+    @react.component @module("react-share")
+    external make: (
+        ~size: int,
+        ~round: bool
+    ) => React.element = "FacebookIcon"
+}
+module LinkedinShare = {
+    @react.component @module("react-share")
+    external make: (
+        ~children: React.element,
+        ~url: string,
+        ~title: string,
+        ~summary: string,
+        ~source: string
+    ) => React.element = "LinkedinShareButton"
+}
+module LinkedinShareIcon = {
+    @react.component @module("react-share")
+    external make: (
+        ~size: int,
+        ~round: bool
+    ) => React.element = "LinkedinIcon"
+}
 
 module Window = {
     type t = Dom.window
@@ -35,10 +91,23 @@ module Window = {
 
 module Dom_element = {
     type t = Dom.element
+    type bounding_client_rect = {
+        x: float,
+        y: float,
+        width: float,
+        height: float
+    }
 
     @get external text_content: t => string = "textContent"
     @get external id: t => string = "id"
     @get external scroll_top: t => int = "scrollTop"
+    @get external offset_height: t => int = "offsetHeight"
+    @get external offset_width: t => int = "offsetWidth"
+    @get external client_height: t => int = "clientHeight"
+    @get external client_width: t => int = "clientWidth"
+    @get external height: t => int = "height"
+    @get external width: t => int = "width"
+    @send external get_bounding_client_rect: t => bounding_client_rect = "getBoundingClientRect"
     @send external set_attribute: (t, string, string) => unit = "setAttribute"
     @send external get_attribute: (t, string) => Js.Nullable.t<string> = "getAttribute"
 }
@@ -47,6 +116,7 @@ module Dom_element = {
 @send external query_selector_all: ('a, string) => Js.Array2.array_like<Dom_element.t> = "querySelectorAll"
 @val external set_interval: (unit => unit, int) => float = "setInterval"
 @val external clear_interval: float => unit = "clearInterval"
+@val external set_timeout: (unit => unit, int) => float = "setTimeout"
 
 module IntersectionObserver = {
     type t
@@ -82,7 +152,7 @@ let fetch_previews = async (): option<array<Firestore.doc_with_id>> => {
     //query_snapshots->QuerySnapshot.size->Js.log
     let docs_array = query_snapshots->QuerySnapshot.docs
     if docs_array->Js.Array2.length > 0 {
-        docs_array->Js.Array2.map(doc => {id: doc->DocSnapshot.id, data: doc->DocSnapshot.data})->Some
+        docs_array->Js.Array2.map(doc => {id: doc->DocSnapshot.id->Js.String2.trim, data: doc->DocSnapshot.data})->Some
     } else {
         None
     }

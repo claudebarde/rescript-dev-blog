@@ -18,6 +18,7 @@
     "firebase": "^9.15.0",
     "react-markdown": "^8.0.4",
     "react-share": "^4.4.1",
+    "react-syntax-highlighter": "^15.5.0",
     "rescript": "^10.1.1"
   },
   "devDependencies": {

@@ -1,3 +1,8 @@
+type img_cover_props = {
+    height: string,
+    width: string
+}
+
 @react.component
 let make = (~post: Firestore.doc_with_id, ~preview_pos: int, ~has_animation: bool) => {
     let (is_hovered, set_is_hovered) = React.useState(_ => false)
