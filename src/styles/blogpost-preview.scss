@@ -23,9 +23,8 @@
     }
 
     .blogpost-preview__image img {
-      filter: gray;
-      -webkit-filter: grayscale(1);
-      filter: grayscale(1);
+      -webkit-filter: grayscale(0);
+      filter: grayscale(0);
     }
   }
 
@@ -42,6 +41,8 @@
       max-height: 100%;
       z-index: 1;
       transition: filter 0.8s;
+      -webkit-filter: grayscale(1);
+      filter: grayscale(1);
     }
 
     .blogpost-preview__read-button {

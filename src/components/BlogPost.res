@@ -9,6 +9,7 @@ let make = (~id: string) => {
     let (current_p_title, set_current_p_title) = React.useState(_ => None)
     let (current_p_index, set_current_p_index) = React.useState(_ => None)
     let (article_read, set_article_read) = React.useState(_ => 0)
+    let (related_articles, set_related_articles) = React.useState(_ => [])
     let scroll_direction = React.useRef(Unknown_dir)
 
     let title_to_anchor = (title: string): string => {
@@ -161,6 +162,7 @@ let make = (~id: string) => {
                                 ->query_selector_all("h1")
                                 ->Js.Array2.from
                                 ->Js.Array2.map(el => el->Dom_element.text_content)
+                            // updates titles array
                             set_titles(_ => titles)
                             // adds an id attribute to the titles
                             let _ = 
@@ -187,7 +189,25 @@ let make = (~id: string) => {
                                             if index !== -1 {
                                                 set_current_p_index(_ => Some(index))
                                                 set_current_p_title(_ => Some(p_title))                                                 
-                                            }                                            
+                                            }
+                                            // loads related articles
+                                            if p_title === "Related articles" {
+                                                let fetch_related_articles = async (tags) => {
+                                                    let articles = switch await Utils.fetch_posts_by_tags(tags, true) {
+                                                        | None => []
+                                                        | Some(articles) => articles
+                                                    }
+                                                    set_related_articles(_ => articles)
+                                                }
+
+                                                switch post_details {
+                                                    | None => ()
+                                                    | Some(details) => {
+                                                        let _ = fetch_related_articles(details.data.tags)
+                                                        ()
+                                                    }
+                                                }
+                                            }                                         
                                         } else if !entry.isIntersecting && entry.target->Dom_element.id === titles[0]->title_to_anchor {
                                             // user is scrolling back to the top
                                             switch scroll_direction.current {
@@ -343,11 +363,20 @@ let make = (~id: string) => {
                             {
                                 switch markdown {
                                     | None => "Loading the article..."
-                                    | Some(m) => m
+                                    | Some(m) => (m ++ "  \n# Related articles")
                                 }
                                 ->React.string
                             }
                         </Utils.Markdown>
+                        <div className="blogpost__related-articles">
+                            {
+                                related_articles
+                                ->Js.Array2.map(
+                                    article => <BlogPostPreview post=article preview_pos=0 has_animation=false key=article.id />
+                                )
+                                ->React.array
+                            }
+                        </div>
                     </div>
             }
         }

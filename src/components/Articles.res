@@ -4,7 +4,7 @@ let make = (~tag: string) => {
 
     React.useEffect1(() => {
         let fetch_docs = async () => {
-            let docs = await Utils.fetch_posts_by_tag(tag)
+            let docs = await Utils.fetch_posts_by_tags([tag], false)
             set_docs(_ => docs)
         }
 
@@ -23,9 +23,7 @@ let make = (~tag: string) => {
 
                         articles
                         ->Js.Array2.map(article => {
-                            let post_id = article->DocSnapshot.id
-                            let post = { id: post_id, data: article->DocSnapshot.data}
-                            <BlogPostPreview key=post_id post preview_pos=0 has_animation=false />
+                            <BlogPostPreview key=article.id post=article preview_pos=0 has_animation=false />
                         })
                         ->React.array
                     }

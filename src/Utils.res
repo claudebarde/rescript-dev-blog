@@ -217,22 +217,35 @@ let fetch_pictures = async (post_id: string, images: array<string>): option<arra
         }
 }
 
-let fetch_posts_by_tag = async (tag: string): option<array<Firestore.DocSnapshot.t>> => {
+let fetch_posts_by_tags = async (tags: array<string>, multiple_tags: bool): option<array<Firestore.doc_with_id>> => {
     open Firebase
     open Firestore
-    // creates Firebase app instance
-    let app = initialize_app(firebase_config)
-    // creates Firestore instance
-    let db = get_firestore(app)
-    // creates the collection reference
-    let collection_ref = collection(db, "previews")
-    // builds the query
-    let q = query(collection_ref, [where_string("tags", "array-contains", tag), order_by(["timestamp", "desc"])])
-    // gets the snapshot
-    let doc_snaps = await get_docs(q)
-    if doc_snaps->QuerySnapshot.size > 0 {
-        doc_snaps->QuerySnapshot.docs->Some
-    } else {
+    if tags->Js.Array2.length === 0 {
         None
+    } else {
+        // creates Firebase app instance
+        let app = initialize_app(firebase_config)
+        // creates Firestore instance
+        let db = get_firestore(app)
+        // creates the collection reference
+        let collection_ref = collection(db, "previews")
+        // builds the query
+        let q = {
+            if multiple_tags {
+                query(collection_ref, [where_strings("tags", "array-contains-any", tags), order_by(["timestamp", "desc"]), limit(2)])
+            } else {
+                query(collection_ref, [where_string("tags", "array-contains", tags[0]), order_by(["timestamp", "desc"])])
+            }
+        }
+        // gets the snapshot
+        let doc_snaps = await get_docs(q)
+        if doc_snaps->QuerySnapshot.size > 0 {
+            doc_snaps
+            ->QuerySnapshot.docs
+            ->Js.Array2.map(doc => { id: doc->DocSnapshot.id, data: doc->DocSnapshot.data })
+            ->Some
+        } else {
+            None
+        }
     }
 }
