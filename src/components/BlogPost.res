@@ -11,6 +11,7 @@ let make = (~id: string) => {
     let (article_read, set_article_read) = React.useState(_ => 0)
     let (related_articles, set_related_articles) = React.useState(_ => [])
     let scroll_direction = React.useRef(Unknown_dir)
+    let context = React.useContext(Context.context)
 
     let title_to_anchor = (title: string): string => {
         title->Js.String2.toLowerCase->Js.String2.replaceByRe(%re("/\s+/g"), "-")
@@ -358,7 +359,70 @@ let make = (~id: string) => {
                         <Utils.Markdown 
                             linkTarget=Some("_blank") 
                             className=Some("blogpost_body")
-                            components=None
+                            components=Some({
+                                code: ({ className, children }) => {
+                                    switch className {
+                                        | Some(class_name) => {
+                                            switch class_name->Js.String2.match_(%re("/language-(\w+)/")) {
+                                                | Some(match) => {
+                                                    switch match[1] {
+                                                        | Some(lang) => 
+                                                            <div className="blogpost__code-block">
+                                                                <div className="blogpost__code-block__buttons">
+                                                                    <button title="Copy">
+                                                                        <span className="material-symbols-outlined">
+                                                                            {"content_copy"->React.string}
+                                                                        </span>
+                                                                    </button>
+                                                                    <button 
+                                                                        title="Light mode"
+                                                                        onClick={_ => {
+                                                                            let new_theme = switch context.code_theme {
+                                                                                | Light => Context.Dark
+                                                                                | Dark => Context.Light
+                                                                            }
+                                                                            context.set_code_theme(_ => new_theme)
+                                                                        }}
+                                                                    >
+                                                                        <span className="material-symbols-outlined">                                                                            
+                                                                            {
+                                                                                switch context.code_theme {
+                                                                                    | Light => {"dark_mode"->React.string}
+                                                                                    | Dark => {"light_mode"->React.string}
+                                                                                }
+                                                                            }
+                                                                        </span>
+                                                                    </button>
+                                                                </div>
+                                                                <Utils.SyntaxHighlighter 
+                                                                    language=lang 
+                                                                    style={
+                                                                        switch context.code_theme {
+                                                                            | Light => Utils.SyntaxHighlighterTheme.material_light
+                                                                            | Dark => Utils.SyntaxHighlighterTheme.material_dark
+                                                                        }
+                                                                    }
+                                                                >
+                                                                    children
+                                                                </Utils.SyntaxHighlighter>
+                                                            </div>
+                                                        | None => 
+                                                            <code className={class_name}>
+                                                                children
+                                                            </code>
+                                                    }
+                                                }
+                                                | None =>
+                                                    <code className={class_name}>
+                                                        children
+                                                    </code>
+                                            }
+                                        }
+                                        | None => 
+                                            <code> children </code>
+                                    }
+                                }
+                            })
                         >
                             {
                                 switch markdown {
@@ -370,11 +434,16 @@ let make = (~id: string) => {
                         </Utils.Markdown>
                         <div className="blogpost__related-articles">
                             {
-                                related_articles
-                                ->Js.Array2.map(
-                                    article => <BlogPostPreview post=article preview_pos=0 has_animation=false key=article.id />
-                                )
-                                ->React.array
+                                if related_articles->Js.Array2.length === 0 {
+                                    <div>{"No article yet"->React.string}</div>
+                                } else {
+                                    related_articles
+                                    ->Js.Array2.filter(article => article.id !== id)
+                                    ->Js.Array2.map(
+                                        article => <BlogPostPreview post=article preview_pos=0 has_animation=false key=article.id />
+                                    )
+                                    ->React.array
+                                }
                             }
                         </div>
                     </div>

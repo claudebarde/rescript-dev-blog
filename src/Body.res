@@ -4,14 +4,17 @@ let make = () => {
 
     let (last_posts, set_last_posts) = React.useState(_ => Context.state.last_posts)
     let (featured_post, set_featured_post) = React.useState(_ => Context.state.featured_post)
+    let (code_theme, set_code_theme) = React.useState(_ => Context.state.code_theme)
 
     <main>
         <Context.Provider 
             value={
-                last_posts: last_posts, 
-                set_last_posts: set_last_posts,
-                featured_post: featured_post,
-                set_featured_post: set_featured_post
+                last_posts, 
+                set_last_posts,
+                featured_post,
+                set_featured_post,
+                code_theme,
+                set_code_theme
             }
             >
         <Sidebar />

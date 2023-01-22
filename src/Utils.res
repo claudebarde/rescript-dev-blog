@@ -1,20 +1,28 @@
-module SyntaxHighlighter = {
-    type style_obj
-    type props_ = {
-        children: React.element,
-        style: style_obj,
-        language: string,
-        @as("PreTag") preTag: string
-    }
+module SyntaxHighlighterTheme = {
+    type t
 
-    @react.component @module("react-syntax-highlighter")
-    external make: props_ => React.element = "Prism"
+    @module("react-syntax-highlighter/dist/esm/styles/prism/dark") external dark: t = "default"
+    @module("react-syntax-highlighter/dist/esm/styles/prism/atom-dark") external atom_dark: t = "default"
+    @module("react-syntax-highlighter/dist/esm/styles/prism/night-owl") external night_owl: t = "default"
+    @module("react-syntax-highlighter/dist/esm/styles/prism/one-dark") external one_dark: t = "default"
+    @module("react-syntax-highlighter/dist/esm/styles/prism/material-dark") external material_dark: t = "default"
+    @module("react-syntax-highlighter/dist/esm/styles/prism/material-light") external material_light: t = "default"
 }
+
+module SyntaxHighlighter = {
+    @react.component @module("react-syntax-highlighter")
+    external make: (
+        ~children: React.element,
+        ~language: string,
+        ~style: SyntaxHighlighterTheme.t
+    ) => React.element = "Prism"
+}
+
 
 module Markdown = {
     type code_args = {
-        inline: bool, 
-        className: string, 
+        // inline: bool, 
+        className: option<string>, 
         children: React.element
     }
     type components = {

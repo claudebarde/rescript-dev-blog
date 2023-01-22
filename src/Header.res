@@ -6,7 +6,9 @@ let make = () => {
     let contactButton = <button key="contact-nav" onClick={_ => RescriptReactRouter.replace("/contact")}>{"Contact"->React.string}</button>
     let searchButton = 
         <button key="search-nav">
-            <span className="material-icons">{"search"->React.string}</span>
+            <span className="material-symbols-outlined">
+                {"search"->React.string}
+            </span>
         </button>
 
   <header>

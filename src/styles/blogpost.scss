@@ -84,6 +84,32 @@
         width: 100% !important;
       }
     }
+
+    .blogpost__code-block {
+      padding: 0px;
+
+      .blogpost__code-block__buttons {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 5px;
+
+        button {
+          background-color: $orange-lighten2;
+          padding: 5px;
+          border-radius: 5px;
+          border: none;
+          cursor: pointer;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          span {
+            font-size: calc(#{$font-size} / 1.2);
+          }
+        }
+      }
+    }
   }
 
   a {
@@ -117,14 +143,7 @@
   }
 
   pre {
-    padding: 10px;
-    background-color: #282c34;
-    overflow-x: auto;
-    color: white;
     border-radius: 5px;
-  }
-  pre code {
-    background-color: #282c34;
   }
   code:not(pre code) {
     background: $orange-lighten4;
