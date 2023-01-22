@@ -304,7 +304,7 @@ let make = (~id: string) => {
                                             open Utils
                                             Window.window->Window.location->Window.href
                                         }
-                                        title={post.data.title ++ " by @claudebarde\n"}
+                                        title={post.data.title ++ " by @claudebarde on MostSignificantBit\n"}
                                         hashtags=post.data.tags
                                     >
                                         <Utils.TwitterShareIcon size=40 round=true />

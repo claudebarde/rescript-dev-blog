@@ -1,8 +1,5 @@
 @react.component
 let make = () => {
-    // let initial_docs: array<Firestore.doc_with_id> = []
-    // let (last_posts, set_last_posts) = React.useState(_ => initial_docs)
-    // let (featured_post, set_featured_post) = React.useState(_ => None)
     let context = React.useContext(Context.context)
 
     React.useEffect0(() => {

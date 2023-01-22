@@ -1,6 +1,6 @@
 .home {
-  padding: 10px;
-  height: calc(100% - #{10px});
+  padding: 0px 10px 100px 10px;
+  height: calc(100% - 110px);
   overflow: auto;
   display: flex;
   flex-direction: column;
@@ -21,6 +21,14 @@
     align-items: center;
     gap: 20px;
     flex-wrap: wrap;
+  }
+
+  &::-webkit-scrollbar {
+    background-color: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 0px;
+    background-color: $orange-accent1;
   }
 }
 
