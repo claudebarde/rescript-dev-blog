@@ -145,6 +145,13 @@ module IntersectionObserver = {
     @send external observe: (t, Dom.element) => unit = "observe"
 }
 
+module ReactHelmet = {
+    @react.component @module("react-helmet")
+    external make: (
+        ~children: React.element,
+    ) => React.element = "Helmet"
+}
+
 let fetch_previews = async (): option<array<Firestore.doc_with_id>> => {
     open Firebase
     open Firestore

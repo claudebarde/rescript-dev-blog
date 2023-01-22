@@ -269,211 +269,230 @@ let make = (~id: string) => {
         None
     })
 
-    <div 
-        className="blogpost" 
-        id="blogpost" 
-        onScroll=(handle_scroll)
-    >
-        <div className="blogpost__left-column">
+    <>
+        <Utils.ReactHelmet>
             {
                 switch post_details {
-                    | Some(post) =>
-                        <div>
-                            <p className="share-buttons">
-                                <span>{"Share"->React.string}</span>
-                                <Utils.TwitterShare 
-                                    url={
-                                        open Utils
-                                        Window.window->Window.location->Window.href
-                                    }
-                                    title={post.data.title ++ " by @claudebarde\n"}
-                                    hashtags=post.data.tags
-                                >
-                                    <Utils.TwitterShareIcon size=40 round=true />
-                                </Utils.TwitterShare>
-                                <Utils.LinkedinShare 
-                                    url={
-                                        open Utils
-                                        Window.window->Window.location->Window.href
-                                    }
-                                    title={post.data.title ++ " by @claudebarde\n"}
-                                    summary=post.data.subtitle
-                                    source="MostSignificantBit"
-                                >
-                                    <Utils.LinkedinShareIcon size=40 round=true />
-                                </Utils.LinkedinShare>
-                                <Utils.FacebookShare 
-                                    url={
-                                        open Utils
-                                        Window.window->Window.location->Window.href
-                                    }
-                                    quote={post.data.title ++ " by @claudebarde\n"}
-                                    hashtags=post.data.tags
-                                >
-                                    <Utils.FacebookShareIcon size=40 round=true />
-                                </Utils.FacebookShare>
-                            </p>
-                        </div>
                     | None => React.null
+                    | Some(details) => {
+                        [
+                            <meta name="twitter:card" content="summary_large_image" />,
+                            <meta name="twitter:site" content="@claudebarde" />,
+                            <meta name="twitter:creator" content="@claudebarde" />,
+                            <meta name="twitter:title" content=details.data.title />,
+                            <meta name="twitter:description" content=details.data.subtitle />,
+                            <meta name="twitter:image" content=details.data.header />,
+                        ]->React.array
+                    }
                 }
             }
-        </ div>
-        {
-            switch post_details {
-                | None => <div>{"Loading"->React.string}</div>
-                | Some(details) => 
-                    <div className="blogpost__middle-column">
-                        <h1 className="blogpost__title">
-                            {details.data.title->React.string}
-                        </h1>
-                        <h2>
-                            {details.data.subtitle->React.string}
-                        </h2>
-                        <p className="published-date">
-                            {"Published on\u00A0"->React.string}
-                            {
-                                (details.data.timestamp.seconds *. 1000.0)
-                                ->Js.Date.fromFloat
-                                ->Js.Date.toLocaleString
-                                ->React.string
-                            }
-                        </p>
-                        <img src={details.data.header} alt="header" />
-                        <div className="blogpost__content">
-                            <p>{"Content"->React.string}</p>
-                            <ul>
-                                {
-                                    titles
-                                    ->Js.Array2.map(
-                                        title => 
-                                            <li key=title>
-                                                <a href={"#" ++ title->title_to_anchor}>
-                                                    {title->React.string}
-                                                </a>
-                                            </li>
-                                    )
-                                    ->React.array
-                                }
-                            </ul>
-                        </div>
-                        <Utils.Markdown 
-                            linkTarget=Some("_blank") 
-                            className=Some("blogpost_body")
-                            components=Some({
-                                code: ({ className, children }) => {
-                                    switch className {
-                                        | Some(class_name) => {
-                                            switch class_name->Js.String2.match_(%re("/language-(\w+)/")) {
-                                                | Some(match) => {
-                                                    switch match[1] {
-                                                        | Some(lang) => 
-                                                            <div className="blogpost__code-block">
-                                                                <div className="blogpost__code-block__buttons">
-                                                                    <button title="Copy">
-                                                                        <span className="material-symbols-outlined">
-                                                                            {"content_copy"->React.string}
-                                                                        </span>
-                                                                    </button>
-                                                                    <button 
-                                                                        title="Light mode"
-                                                                        onClick={_ => {
-                                                                            let new_theme = switch context.code_theme {
-                                                                                | Light => Context.Dark
-                                                                                | Dark => Context.Light
-                                                                            }
-                                                                            context.set_code_theme(_ => new_theme)
-                                                                        }}
-                                                                    >
-                                                                        <span className="material-symbols-outlined">                                                                            
-                                                                            {
-                                                                                switch context.code_theme {
-                                                                                    | Light => {"dark_mode"->React.string}
-                                                                                    | Dark => {"light_mode"->React.string}
-                                                                                }
-                                                                            }
-                                                                        </span>
-                                                                    </button>
-                                                                </div>
-                                                                <Utils.SyntaxHighlighter 
-                                                                    language=lang 
-                                                                    style={
-                                                                        switch context.code_theme {
-                                                                            | Light => Utils.SyntaxHighlighterTheme.material_light
-                                                                            | Dark => Utils.SyntaxHighlighterTheme.material_dark
-                                                                        }
-                                                                    }
-                                                                >
-                                                                    children
-                                                                </Utils.SyntaxHighlighter>
-                                                            </div>
-                                                        | None => 
-                                                            <code className={class_name}>
-                                                                children
-                                                            </code>
-                                                    }
-                                                }
-                                                | None =>
-                                                    <code className={class_name}>
-                                                        children
-                                                    </code>
-                                            }
+        </Utils.ReactHelmet>
+        <div 
+            className="blogpost" 
+            id="blogpost" 
+            onScroll=(handle_scroll)
+        >
+            <div className="blogpost__left-column">
+                {
+                    switch post_details {
+                        | Some(post) =>
+                            <div>
+                                <p className="share-buttons">
+                                    <span>{"Share"->React.string}</span>
+                                    <Utils.TwitterShare 
+                                        url={
+                                            open Utils
+                                            Window.window->Window.location->Window.href
                                         }
-                                        | None => 
-                                            <code> children </code>
+                                        title={post.data.title ++ " by @claudebarde\n"}
+                                        hashtags=post.data.tags
+                                    >
+                                        <Utils.TwitterShareIcon size=40 round=true />
+                                    </Utils.TwitterShare>
+                                    <Utils.LinkedinShare 
+                                        url={
+                                            open Utils
+                                            Window.window->Window.location->Window.href
+                                        }
+                                        title={post.data.title ++ " by @claudebarde\n"}
+                                        summary=post.data.subtitle
+                                        source="MostSignificantBit"
+                                    >
+                                        <Utils.LinkedinShareIcon size=40 round=true />
+                                    </Utils.LinkedinShare>
+                                    <Utils.FacebookShare 
+                                        url={
+                                            open Utils
+                                            Window.window->Window.location->Window.href
+                                        }
+                                        quote={post.data.title ++ " by @claudebarde\n"}
+                                        hashtags=post.data.tags
+                                    >
+                                        <Utils.FacebookShareIcon size=40 round=true />
+                                    </Utils.FacebookShare>
+                                </p>
+                            </div>
+                        | None => React.null
+                    }
+                }
+            </ div>
+            {
+                switch post_details {
+                    | None => <div>{"Loading"->React.string}</div>
+                    | Some(details) => 
+                        <div className="blogpost__middle-column">
+                            <h1 className="blogpost__title">
+                                {details.data.title->React.string}
+                            </h1>
+                            <h2>
+                                {details.data.subtitle->React.string}
+                            </h2>
+                            <p className="published-date">
+                                {"Published on\u00A0"->React.string}
+                                {
+                                    (details.data.timestamp.seconds *. 1000.0)
+                                    ->Js.Date.fromFloat
+                                    ->Js.Date.toLocaleString
+                                    ->React.string
+                                }
+                            </p>
+                            <img src={details.data.header} alt="header" />
+                            <div className="blogpost__content">
+                                <p>{"Content"->React.string}</p>
+                                <ul>
+                                    {
+                                        titles
+                                        ->Js.Array2.map(
+                                            title => 
+                                                <li key=title>
+                                                    <a href={"#" ++ title->title_to_anchor}>
+                                                        {title->React.string}
+                                                    </a>
+                                                </li>
+                                        )
+                                        ->React.array
+                                    }
+                                </ul>
+                            </div>
+                            <Utils.Markdown 
+                                linkTarget=Some("_blank") 
+                                className=Some("blogpost_body")
+                                components=Some({
+                                    code: ({ className, children }) => {
+                                        switch className {
+                                            | Some(class_name) => {
+                                                switch class_name->Js.String2.match_(%re("/language-(\w+)/")) {
+                                                    | Some(match) => {
+                                                        switch match[1] {
+                                                            | Some(lang) => 
+                                                                <div className="blogpost__code-block">
+                                                                    <div className="blogpost__code-block__buttons">
+                                                                        <button title="Copy">
+                                                                            <span className="material-symbols-outlined">
+                                                                                {"content_copy"->React.string}
+                                                                            </span>
+                                                                        </button>
+                                                                        <button 
+                                                                            title="Light mode"
+                                                                            onClick={_ => {
+                                                                                let new_theme = switch context.code_theme {
+                                                                                    | Light => Context.Dark
+                                                                                    | Dark => Context.Light
+                                                                                }
+                                                                                context.set_code_theme(_ => new_theme)
+                                                                            }}
+                                                                        >
+                                                                            <span className="material-symbols-outlined">                                                                            
+                                                                                {
+                                                                                    switch context.code_theme {
+                                                                                        | Light => {"dark_mode"->React.string}
+                                                                                        | Dark => {"light_mode"->React.string}
+                                                                                    }
+                                                                                }
+                                                                            </span>
+                                                                        </button>
+                                                                    </div>
+                                                                    <Utils.SyntaxHighlighter 
+                                                                        language=lang 
+                                                                        style={
+                                                                            switch context.code_theme {
+                                                                                | Light => Utils.SyntaxHighlighterTheme.material_light
+                                                                                | Dark => Utils.SyntaxHighlighterTheme.material_dark
+                                                                            }
+                                                                        }
+                                                                    >
+                                                                        children
+                                                                    </Utils.SyntaxHighlighter>
+                                                                </div>
+                                                            | None => 
+                                                                <code className={class_name}>
+                                                                    children
+                                                                </code>
+                                                        }
+                                                    }
+                                                    | None =>
+                                                        <code className={class_name}>
+                                                            children
+                                                        </code>
+                                                }
+                                            }
+                                            | None => 
+                                                <code> children </code>
+                                        }
+                                    }
+                                })
+                            >
+                                {
+                                    switch markdown {
+                                        | None => "Loading the article..."
+                                        | Some(m) => (m ++ "  \n# Related articles")
+                                    }
+                                    ->React.string
+                                }
+                            </Utils.Markdown>
+                            <div className="blogpost__related-articles">
+                                {
+                                    if related_articles->Js.Array2.length === 0 {
+                                        <div>{"No article yet"->React.string}</div>
+                                    } else {
+                                        related_articles
+                                        ->Js.Array2.filter(article => article.id !== id)
+                                        ->Js.Array2.map(
+                                            article => <BlogPostPreview post=article preview_pos=0 has_animation=false key=article.id />
+                                        )
+                                        ->React.array
                                     }
                                 }
-                            })
-                        >
-                            {
-                                switch markdown {
-                                    | None => "Loading the article..."
-                                    | Some(m) => (m ++ "  \n# Related articles")
-                                }
-                                ->React.string
-                            }
-                        </Utils.Markdown>
-                        <div className="blogpost__related-articles">
-                            {
-                                if related_articles->Js.Array2.length === 0 {
-                                    <div>{"No article yet"->React.string}</div>
-                                } else {
-                                    related_articles
-                                    ->Js.Array2.filter(article => article.id !== id)
-                                    ->Js.Array2.map(
-                                        article => <BlogPostPreview post=article preview_pos=0 has_animation=false key=article.id />
-                                    )
-                                    ->React.array
-                                }
-                            }
+                            </div>
                         </div>
-                    </div>
+                }
             }
-        }
-        <div className="blogpost__right-column">
-            <div>
-                <p id="percentage-read">
-                    {article_read->React.int} {"\u00A0% read"->React.string}
-                </p>
-                <p id="current-paragraph">
-                    <span>
-                        {
-                            switch current_p_index {
-                                | None => React.null
-                                | Some(i) => ("Part\u00A0" ++ (i + 1)->Js.Int.toString ++ ":")->React.string
+            <div className="blogpost__right-column">
+                <div>
+                    <p id="percentage-read">
+                        {article_read->React.int} {"\u00A0% read"->React.string}
+                    </p>
+                    <p id="current-paragraph">
+                        <span>
+                            {
+                                switch current_p_index {
+                                    | None => React.null
+                                    | Some(i) => ("Part\u00A0" ++ (i + 1)->Js.Int.toString ++ ":")->React.string
+                                }
                             }
-                        }
-                    </span>
-                    <br />
-                    <span>
-                        {
-                            switch current_p_title {
-                                | None => React.null
-                                | Some(p) => p->React.string
+                        </span>
+                        <br />
+                        <span>
+                            {
+                                switch current_p_title {
+                                    | None => React.null
+                                    | Some(p) => p->React.string
+                                }
                             }
-                        }
-                    </span>
-                </p>
+                        </span>
+                    </p>
+                </div>
             </div>
         </div>
-    </div>
+    </>
 }
