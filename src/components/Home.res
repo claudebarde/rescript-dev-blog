@@ -61,6 +61,7 @@ let make = () => {
         </div>
     } else {
         <div className="home">
+            <div className="mobile-intro"> <Introduction /> </div>            
             {
                 switch context.featured_post {
                     | Some(post) => {

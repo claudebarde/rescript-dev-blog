@@ -4,6 +4,7 @@
 let make = () => {
     let articlesButton = <button key="articles-nav" onClick={_ => RescriptReactRouter.replace("/articles")}>{"Articles"->React.string}</button>
     let contactButton = <button key="contact-nav" onClick={_ => RescriptReactRouter.replace("/contact")}>{"Contact"->React.string}</button>
+    // TODO: implement the search function
     let searchButton = 
         <button key="search-nav">
             <span className="material-symbols-outlined">
@@ -21,7 +22,7 @@ let make = () => {
         </a>
         <div className="buttons">
             {
-                [articlesButton, contactButton, searchButton]->React.array
+                [articlesButton, contactButton]->React.array
             }
         </div>
     </nav>

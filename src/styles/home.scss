@@ -23,6 +23,10 @@
     flex-wrap: wrap;
   }
 
+  .mobile-intro {
+    display: none;
+  }
+
   &::-webkit-scrollbar {
     background-color: transparent;
   }
@@ -145,6 +149,29 @@
       transform: translateZ(-80px) scale(1.3);
       animation-timing-function: cubic-bezier(0.76, 0.05, 0.86, 0.06);
       opacity: 0.05;
+    }
+  }
+}
+
+@media screen and (max-width: 780px) {
+  .home {
+    padding: 20px 0px;
+    height: 100%;
+    overflow-x: hidden;
+    width: 100%;
+    align-items: center;
+
+    h1 {
+      font-size: calc(#{$font-size} * 1.5);
+      margin: 10px 0px;
+    }
+
+    .mobile-intro {
+      display: flex;
+    }
+
+    .home__blogposts-preview {
+      justify-content: center;
     }
   }
 }

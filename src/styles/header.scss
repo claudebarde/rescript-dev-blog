@@ -55,3 +55,17 @@ header {
     }
   }
 }
+
+@media screen and (max-width: 780px) {
+  header {
+    nav {
+      .title {
+        font-size: calc(#{$font-size} * 1.5);
+      }
+
+      .buttons {
+        display: none;
+      }
+    }
+  }
+}

@@ -6,3 +6,9 @@ footer {
   font-size: $font-size;
   background-color: $bg-color;
 }
+
+@media screen and (max-width: 780px) {
+  footer {
+    justify-content: center;
+  }
+}

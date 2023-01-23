@@ -11,10 +11,10 @@ let make = () => {
             {"I am a DevRel on Tezos, I am interested in front-end dev, smart contracts, 
             decentralized applications and functional programming"->React.string}
         </div>
-        <div className="intro-card__languages">
+        <div>
             <p>{"My favorite languages/frameworks:"->React.string}</p>
-            <ul>
-                <li>
+            <div className="intro-card__languages">
+                <div>
                     <a 
                         href="https://www.rust-lang.org/"
                         target="_blank"
@@ -23,8 +23,8 @@ let make = () => {
                     >
                         <img src=rust_logo alt="Rust logo" />{"Rust"->React.string}
                     </a>
-                </li>
-                <li>
+                </div>
+                <div>
                     <a 
                         href="https://www.svelte.dev/"
                         target="_blank"
@@ -33,8 +33,8 @@ let make = () => {
                     >
                         <img src=svelte_logo alt="Svelte logo" />{"Svelte"->React.string}
                     </a>
-                </li>
-                <li>
+                </div>
+                <div>
                     <a 
                         href="https://rescript-lang.org"
                         target="_blank"
@@ -43,8 +43,8 @@ let make = () => {
                     >
                         <img src=rescript_logo alt="ReScript logo" />{"ReScript"->React.string}
                     </a>
-                </li>
-                <li>
+                </div>
+                <div>
                     <a 
                         href="https://tezos.gitlab.io/active/michelson.html"
                         target="_blank"
@@ -53,8 +53,8 @@ let make = () => {
                     >
                         <img src=michelson_logo alt="Michelson logo" />{"Michelson"->React.string}
                     </a>
-                </li>
-            </ul>
+                </div>
+            </div>
         </div>
     </div>
 }
