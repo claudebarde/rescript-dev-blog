@@ -56,6 +56,9 @@ let make = (~post: Firestore.doc_with_id, ~preview_pos: int, ~has_animation: boo
                     React.array(post.data.tags->Js.Array2.map(tag => <Tag key=tag tag />))
                 }
             </div>
+            <button className="mobile-read-button" onClick={navigateToPost}>
+                {"Read"->React.string}
+            </button>
         </div>
     </div>
 }

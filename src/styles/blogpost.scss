@@ -181,3 +181,30 @@
     }
   }
 }
+
+@media screen and (max-width: 780px) {
+  .blogpost {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+
+    .blogpost__left-column,
+    .blogpost__right-column {
+      display: none;
+    }
+
+    .blogpost__middle-column {
+      padding: 0px;
+    }
+
+    img {
+      object-fit: none;
+      width: 90vw;
+    }
+
+    pre {
+      width: 70vw;
+    }
+  }
+}
