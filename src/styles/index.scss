@@ -19,6 +19,10 @@ body {
   width: 100vw;
   display: grid;
   grid-template-rows: 8% 87% 5%;
+
+  .mobile-links {
+    display: none;
+  }
 }
 
 main {
@@ -104,6 +108,31 @@ main {
 }
 
 @media screen and (max-width: 780px) {
+  #root {
+    grid-template-rows: 8% 82% 5% 5%;
+
+    .mobile-links {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background-color: $bg-color;
+      border-top: dotted 3px $orange-lighten2;
+
+      .mobile-link {
+        text-decoration: none;
+
+        img {
+          height: 28px;
+          width: 28px;
+        }
+        span.material-symbols-outlined {
+          font-size: 28px;
+          color: black;
+        }
+      }
+    }
+  }
+
   main {
     display: flex;
     flex-direction: column;

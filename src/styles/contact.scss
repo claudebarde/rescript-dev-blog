@@ -49,3 +49,9 @@
     }
   }
 }
+
+@media screen and (max-width: 780px) {
+  .contact > div {
+    width: calc(100% - 60px);
+  }
+}
