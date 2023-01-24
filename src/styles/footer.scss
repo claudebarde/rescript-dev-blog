@@ -5,10 +5,12 @@ footer {
   font-family: "VT323", monospace; //Sacramento;
   font-size: $font-size;
   background-color: $bg-color;
+  padding: $header-footer-padding;
 }
 
 @media screen and (max-width: 780px) {
   footer {
+    width: calc(100vw - #{$header-footer-padding} * 2);
     justify-content: center;
   }
 }

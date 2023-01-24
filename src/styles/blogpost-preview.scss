@@ -172,6 +172,20 @@
     width: 90%;
     min-height: auto;
 
+    &:hover {
+      box-shadow: inherit;
+      width: 90%;
+
+      .blogpost-preview__details {
+        width: auto;
+      }
+
+      .blogpost-preview__image img {
+        -webkit-filter: grayscale(0);
+        filter: grayscale(0);
+      }
+    }
+
     .blogpost-preview__image {
       img {
         width: 100%;

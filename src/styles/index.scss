@@ -21,11 +21,6 @@ body {
   grid-template-rows: 8% 87% 5%;
 }
 
-header,
-footer {
-  padding: 10px;
-}
-
 main {
   padding: 0px 10px 10px 10px;
   display: grid;
@@ -114,6 +109,7 @@ main {
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
+    width: calc(100vw - 20px);
   }
 
   .tags {

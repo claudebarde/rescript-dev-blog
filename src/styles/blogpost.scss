@@ -195,16 +195,35 @@
     }
 
     .blogpost__middle-column {
-      padding: 0px;
+      padding: 10px;
+      width: calc(100% - 20px);
+
+      blockquote {
+        width: 80%;
+      }
+
+      div.blogpost__content {
+        width: 90%;
+      }
     }
 
     img {
-      object-fit: none;
       width: 90vw;
     }
 
     pre {
-      width: 70vw;
+      width: calc(100% - 20px);
+
+      code {
+        width: 95%;
+        display: block;
+      }
+    }
+
+    h1,
+    a,
+    code {
+      word-wrap: break-word;
     }
   }
 }
