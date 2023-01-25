@@ -114,7 +114,7 @@ main {
     .mobile-links {
       display: flex;
       justify-content: space-around;
-      align-items: center;
+      align-items: flex-end;
       background-color: $bg-color;
       border-top: dotted 3px $orange-lighten2;
 

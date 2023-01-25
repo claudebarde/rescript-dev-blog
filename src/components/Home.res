@@ -11,7 +11,7 @@ let make = () => {
             }
             context.set_featured_post(_ => featured_post)
             // fetches previews
-            let docs = switch await Utils.fetch_previews() {
+            let docs = switch await Utils.fetch_previews(4) {
                 | data => switch data {
                     | None => []
                     | Some(val) => val

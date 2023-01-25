@@ -1,10 +1,20 @@
 @react.component
-let make = (~tag: string) => {
+let make = (~tag: option<string>) => {
     let (docs, set_docs) = React.useState(_ => None)
 
     React.useEffect1(() => {
         let fetch_docs = async () => {
-            let docs = await Utils.fetch_posts_by_tags([tag], false)
+            let docs = 
+                switch tag {
+                    | Some(tag) => {
+                        // articles with a tag in common
+                        await Utils.fetch_posts_by_tags([tag], false)
+                    }
+                    | None => {
+                        // all the articles
+                        await Utils.fetch_previews(10)
+                    }
+                }
             set_docs(_ => docs)
         }
 
@@ -14,7 +24,15 @@ let make = (~tag: string) => {
     }, [tag])
 
     <div className="home">
-        <h1>{("Articles about\u00A0" ++ tag)->React.string}</h1>
+        <h1>
+            {
+                switch tag {
+                    | None => "All articles"
+                    | Some(tag) => ("Articles about\u00A0" ++ tag)
+                }
+                ->React.string
+            }
+        </h1>
         <div className="home__blogposts-preview">
             {
                 switch docs {

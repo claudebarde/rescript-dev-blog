@@ -152,7 +152,7 @@ module ReactHelmet = {
     ) => React.element = "Helmet"
 }
 
-let fetch_previews = async (): option<array<Firestore.doc_with_id>> => {
+let fetch_previews = async (fetch_limit: int): option<array<Firestore.doc_with_id>> => {
     open Firebase
     open Firestore
     // creates Firebase app instance
@@ -162,7 +162,7 @@ let fetch_previews = async (): option<array<Firestore.doc_with_id>> => {
     // creates the collection instance
     let collection_ref = collection(db, "previews")
     // gets the snapshots
-    let q = query(collection_ref, [order_by(["timestamp", "desc"]), limit(4)])
+    let q = query(collection_ref, [where_bool("visible", "==", true), order_by(["timestamp", "desc"]), limit(fetch_limit)])
     let query_snapshots = await get_docs(q)
     //query_snapshots->QuerySnapshot.size->Js.log
     let docs_array = query_snapshots->QuerySnapshot.docs

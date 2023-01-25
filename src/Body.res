@@ -22,7 +22,8 @@ let make = () => {
                 switch url.path {
                 | list{"blogpost", id, _} => <BlogPost id />
                 | list{"contact"} => <Contact />
-                | list{"articles", tag} => <Articles tag />
+                | list{"articles", tag} => <Articles tag=Some(tag) />
+                | list{"articles"} => <Articles tag=None />
                 | list{} => <Home />
                 | _ => <PageNotFound />
                 }
