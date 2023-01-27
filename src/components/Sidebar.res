@@ -6,10 +6,10 @@ let make = () => {
     <aside>
         <Introduction />
         <button onClick={_ => RescriptReactRouter.replace("/articles/Tezos")}>
-            {"Tezos development"->React.string}
+            {"Articles about Tezos"->React.string}
         </button>
         <button onClick={_ => RescriptReactRouter.replace("/articles/front-end")}>
-            {"Front-end development"->React.string}
+            {"Articles about front-end"->React.string}
         </button>
         <hr />
         <a 
