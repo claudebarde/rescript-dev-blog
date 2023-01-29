@@ -1,11 +1,15 @@
 type scroll_direction = Up(float) | Down(float) | Unknown_dir // each breanch saves the last known scroll position
 
+type blogpost_ipfs = {
+    body: string
+}
+
 @react.component
 let make = (~id: string) => {
     let (post_details, set_post_details) = React.useState(_ => None)
     let (titles, set_titles) = React.useState(_ => [])
     let (markdown, set_markdown) = React.useState(_ => None)
-    let (markdown_rendered_check, check_markdown_rendered) = React.useState(_ => None)
+    let markdown_rendered_check = React.useRef(0.0)
     let (current_p_title, set_current_p_title) = React.useState(_ => None)
     let (current_p_index, set_current_p_index) = React.useState(_ => None)
     let (article_read, set_article_read) = React.useState(_ => 0)
@@ -59,99 +63,158 @@ let make = (~id: string) => {
             }
             let _ = set_post_details(_ => details)
 
-            // finds the pictures in the Markdown code
-            let markdown = MarkdownMockup.test
-            let images: array<string> = {
-                let rec find_image = (str: string, images: array<string>): array<string> => {
-                    switch Js.Re.exec_(%re("/!\[\[(.*)\.(png|jpeg|jpg|gif)\]\]/g"), str) {
-                        | None => images
-                        | Some(matches) => {
-                            let capture = matches->Js.Re.captures
-                            if capture->Js.Array2.length > 0 {
-                                let full_match = capture[0]->Js.Nullable.toOption
-                                let img_name = capture[1]->Js.Nullable.toOption
-                                let img_ext = capture[2]->Js.Nullable.toOption
-                                // pushes the new found image into the array
-                                switch (full_match, img_name, img_ext) {
-                                    | (Some(full_match), Some(img_name), Some(img_ext)) => {
-                                        let _ = images->Js.Array2.push(img_name ++ "." ++ img_ext)
-                                        // recursive call
-                                        find_image(
-                                            matches
-                                            ->Js.Re.input
-                                            ->Js.String2.sliceToEnd(~from=(matches->Js.Re.index + full_match->Js.String2.length)), 
-                                            images
-                                        )
+            switch details {
+                | None => ()
+                | Some(preview) => {
+                    // fetches the markdown code
+                    let blogpost: result<blogpost_ipfs, string> = {
+                        open Fetch
+
+                        let url = "https://nftstorage.link/ipfs/" ++ preview.data.ipfs_dir ++ "/blogpost.json"
+                        switch await fetch(url) {
+                            | res => {
+                                switch await res->FetchResponse.to_json {
+                                    | data => {
+                                        switch data->Js.Json.decodeObject {
+                                            | None => Error("Blogpost data from the IPFS is not an object")
+                                            | Some(obj) => {
+                                                switch obj->Js.Dict.get("body") {
+                                                    | None => Error("Blogpost data provided by the IPFS has no 'body' property")
+                                                    | Some(body) => {
+                                                        switch body->Js.Json.decodeString {
+                                                            | None => Error("The 'body' property of blogpost data provided by the IPFS is not a string")
+                                                            | Some(markdown) => Ok({ body: markdown })
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
-                                    | _ => images
-                                }                            
-                            } else {
-                                images
+                                    | exception JsError(err) => {
+                                        switch err->Js.Json.stringifyAny {
+                                            | None => Error("Unable to stringify error from from converting blogpost data to JSON")
+                                            | Some(err) => Error(err)
+                                        }
+                                    }
+                                }
+                            }
+                            | exception JsError(err) => {
+                                switch err->Js.Json.stringifyAny {
+                                    | None => Error("Unable to stringify error from fetching the blogpost data")
+                                    | Some(err) => Error(err)
+                                }
                             }
                         }
                     }
-                }
-
-                find_image(markdown, [])
-            }
-            // replaces local markdown pictures with full markdown img tags and respective URLs
-            let markdown = 
-                if images->Js.Array2.length > 0 {
-                    // fetches the picture URLs
-                    let pictures = switch await Utils.fetch_pictures(id, images) {
-                        | data => data
-                        | exception JsError(_) => None
-                    }
-                    switch pictures {
-                        | None => markdown
-                        | Some(imgs) => {
-                            // replaces `![[pic-name]]` with `![pic-name](full-path)`
-                            imgs
-                            ->Js.Array2.reduce(
-                                (markdown, img) => {
-                                    let regex = Js.Re.fromString(
-                                        "!\\[\\[" ++ 
-                                        img.name
-                                        ->Js.String2.replaceByRe(%re("/\-/"), "\\-")
-                                        ->Js.String2.replaceByRe(%re("/\./"), "\\.") ++ 
-                                        "\\]\\]"
-                                        )
-                                    let replacement = "![" ++ img.name ++ "](" ++ img.full_path ++ ")"
-                                    markdown
-                                    ->Js.String2.replaceByRe(
-                                        regex, 
-                                        replacement
-                                    )
-                                }, 
-                                markdown
-                            )
+                    // let markdown = MarkdownMockup.test
+                    switch blogpost {
+                        | Error(err) => {
+                            Js.log(err)
+                            ()
                         }
-                    }
-                } else {
-                    markdown
-                }
-            set_markdown(_ => Some(markdown))  
+                        | Ok(post) => {
+                            let markdown = post.body->Js.String2.replaceByRe(%re("/\\n/g"), "\n")
+                            // finds the pictures in the Markdown code
+                            let images: array<string> = {
+                                let rec find_image = (str: string, images: array<string>): array<string> => {
+                                    switch Js.Re.exec_(%re("/!\[\[(.*)\.(png|jpeg|jpg|gif)\]\]/g"), str) {
+                                        | None => images
+                                        | Some(matches) => {
+                                            let capture = matches->Js.Re.captures
+                                            if capture->Js.Array2.length > 0 {
+                                                let full_match = capture[0]->Js.Nullable.toOption
+                                                let img_name = capture[1]->Js.Nullable.toOption
+                                                let img_ext = capture[2]->Js.Nullable.toOption
+                                                // pushes the new found image into the array
+                                                switch (full_match, img_name, img_ext) {
+                                                    | (Some(full_match), Some(img_name), Some(img_ext)) => {
+                                                        let _ = images->Js.Array2.push(img_name ++ "." ++ img_ext)
+                                                        // recursive call
+                                                        find_image(
+                                                            matches
+                                                            ->Js.Re.input
+                                                            ->Js.String2.sliceToEnd(~from=(matches->Js.Re.index + full_match->Js.String2.length)), 
+                                                            images
+                                                        )
+                                                    }
+                                                    | _ => images
+                                                }                            
+                                            } else {
+                                                images
+                                            }
+                                        }
+                                    }
+                                }
 
-            // setting up the Intersection Observer API
-            let interval = Utils.set_interval(() => {
-                open Utils
-                switch document->query_selector(".blogpost_body")->Js.Nullable.toOption {
-                    | None => "No .blogpost_body"->Js.log
-                    | Some(_) => set_current_p_title(_ => Some(""))
+                                find_image(markdown, [])
+                            }
+                            // replaces local markdown pictures with full markdown img tags and respective URLs
+                            let markdown = 
+                                if images->Js.Array2.length > 0 {
+                                    // fetches the picture URLs
+                                    let pictures = switch await Utils.fetch_pictures(id, images) {
+                                        | data => data
+                                        | exception JsError(_) => None
+                                    }
+                                    switch pictures {
+                                        | None => markdown
+                                        | Some(imgs) => {
+                                            // replaces `![[pic-name]]` with `![pic-name](full-path)`
+                                            imgs
+                                            ->Js.Array2.reduce(
+                                                (markdown, img) => {
+                                                    let regex = Js.Re.fromString(
+                                                        "!\\[\\[" ++ 
+                                                        img.name
+                                                        ->Js.String2.replaceByRe(%re("/\-/"), "\\-")
+                                                        ->Js.String2.replaceByRe(%re("/\./"), "\\.") ++ 
+                                                        "\\]\\]"
+                                                        )
+                                                    let replacement = "![" ++ img.name ++ "](" ++ img.full_path ++ ")"
+                                                    markdown
+                                                    ->Js.String2.replaceByRe(
+                                                        regex, 
+                                                        replacement
+                                                    )
+                                                }, 
+                                                markdown
+                                            )
+                                        }
+                                    }
+                                } else {
+                                    markdown
+                                }
+                            set_markdown(_ => Some(markdown))  
+
+                            // setting up the interval for the Intersection Observer API
+                            let interval = Utils.set_interval(() => {
+                                open Utils
+                                switch document->query_selector(".blogpost_body")->Js.Nullable.toOption {
+                                    | None => "No .blogpost_body"->Js.log
+                                    | Some(_) => set_current_p_title(_ => Some(""))
+                                }
+                            }, 500)
+                            markdown_rendered_check.current = interval
+                        }
+                    } 
                 }
-            }, 500)
-            check_markdown_rendered(_ => Some(interval))
+            }        
         }
 
         let _ = init()
 
-        None
+        Some(() => {
+            if markdown_rendered_check.current > 0.0 {
+                Utils.clear_interval(markdown_rendered_check.current)
+            }
+        })
     })
 
-    React.useEffect(() => {
-        switch (current_p_title, markdown_rendered_check) {
-            | (Some(_), Some(interval)) => {
-                let _ = Utils.clear_interval(interval)
+    React.useEffect1(() => {
+        if markdown_rendered_check.current > 0.0 {
+            switch current_p_title {
+            | None => {
+                let _ = Utils.clear_interval(markdown_rendered_check.current)
                 let _ = {
                     open Utils
                     switch document->query_selector(".blogpost_body")->Js.Nullable.toOption {
@@ -194,7 +257,7 @@ let make = (~id: string) => {
                                             // loads related articles
                                             if p_title === "Related articles" {
                                                 let fetch_related_articles = async (tags) => {
-                                                    let articles = switch await Utils.fetch_posts_by_tags(tags, true) {
+                                                    let articles = switch await Utils.fetch_previews_by_tags(tags, true) {
                                                         | None => []
                                                         | Some(articles) => articles
                                                     }
@@ -261,13 +324,16 @@ let make = (~id: string) => {
                         }
                     }
                 }
-                check_markdown_rendered(_ => None)
+                markdown_rendered_check.current = 0.0
             }
             | _ => ()
         }
+        } else {
+            ()
+        }
 
         None
-    })
+    }, [markdown_rendered_check.current])
 
     <>
         <Utils.ReactHelmet>
@@ -453,7 +519,7 @@ let make = (~id: string) => {
                             <div className="blogpost__related-articles">
                                 {
                                     if related_articles->Js.Array2.length === 0 {
-                                        <div>{"No article yet"->React.string}</div>
+                                        <div>{"Loading..."->React.string}</div>
                                     } else {
                                         related_articles
                                         ->Js.Array2.filter(article => article.id !== id)

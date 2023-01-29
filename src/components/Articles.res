@@ -8,7 +8,7 @@ let make = (~tag: option<string>) => {
                 switch tag {
                     | Some(tag) => {
                         // articles with a tag in common
-                        await Utils.fetch_posts_by_tags([tag], false)
+                        await Utils.fetch_previews_by_tags([tag], false)
                     }
                     | None => {
                         // all the articles

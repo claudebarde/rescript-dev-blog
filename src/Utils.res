@@ -152,7 +152,7 @@ module ReactHelmet = {
     ) => React.element = "Helmet"
 }
 
-let fetch_previews = async (fetch_limit: int): option<array<Firestore.doc_with_id>> => {
+let fetch_previews = async (fetch_limit: int): option<array<Firestore.preview_with_id>> => {
     open Firebase
     open Firestore
     // creates Firebase app instance
@@ -167,13 +167,18 @@ let fetch_previews = async (fetch_limit: int): option<array<Firestore.doc_with_i
     //query_snapshots->QuerySnapshot.size->Js.log
     let docs_array = query_snapshots->QuerySnapshot.docs
     if docs_array->Js.Array2.length > 0 {
-        docs_array->Js.Array2.map(doc => {id: doc->DocSnapshot.id->Js.String2.trim, data: doc->DocSnapshot.data})->Some
+        docs_array
+        ->Js.Array2.map(
+            doc => 
+                ({ id: doc->DocSnapshot.id->Js.String2.trim, data: doc->DocSnapshot.preview_data }: Firestore.preview_with_id)
+        )
+        ->Some
     } else {
         None
     }
 }
 
-let fetch_preview = async (preview_id: string): option<Firestore.doc_with_id> => {
+let fetch_preview = async (preview_id: string): option<Firestore.preview_with_id> => {
     open Firebase
     open Firestore
     // creates Firebase app instance
@@ -181,16 +186,17 @@ let fetch_preview = async (preview_id: string): option<Firestore.doc_with_id> =>
     // creates Firestore instance
     let db = get_firestore(app)
     // gets the snapshot
-    let q = doc(db, "previews", preview_id)
-    let doc_snap = await get_doc(q)
+    Js.log(preview_id)
+    let doc_ref = doc(db, "previews", preview_id)
+    let doc_snap = await get_doc(doc_ref)
     if doc_snap->DocSnapshot.exists {
-        {id: doc_snap->DocSnapshot.id, data: doc_snap->DocSnapshot.data}->Some
+        { id: doc_snap->DocSnapshot.id, data: doc_snap->DocSnapshot.preview_data }->Some
     } else {
         None
     }
 }
 
-let fetch_preview_featured = async (): option<Firestore.doc_with_id> => {
+let fetch_preview_featured = async (): option<Firestore.preview_with_id> => {
     open Firebase
     open Firestore
     // creates Firebase app instance
@@ -206,7 +212,7 @@ let fetch_preview_featured = async (): option<Firestore.doc_with_id> => {
     if doc_snap->QuerySnapshot.size === 1 {
         let doc = doc_snap->QuerySnapshot.docs
 
-        { id: doc[0]->DocSnapshot.id, data: doc[0]->DocSnapshot.data }->Some
+        { id: doc[0]->DocSnapshot.id, data: doc[0]->DocSnapshot.preview_data }->Some
     } else {
         None
     }
@@ -232,7 +238,7 @@ let fetch_pictures = async (post_id: string, images: array<string>): option<arra
         }
 }
 
-let fetch_posts_by_tags = async (tags: array<string>, multiple_tags: bool): option<array<Firestore.doc_with_id>> => {
+let fetch_previews_by_tags = async (tags: array<string>, multiple_tags: bool): option<array<Firestore.preview_with_id>> => {
     open Firebase
     open Firestore
     if tags->Js.Array2.length === 0 {
@@ -257,10 +263,28 @@ let fetch_posts_by_tags = async (tags: array<string>, multiple_tags: bool): opti
         if doc_snaps->QuerySnapshot.size > 0 {
             doc_snaps
             ->QuerySnapshot.docs
-            ->Js.Array2.map(doc => { id: doc->DocSnapshot.id, data: doc->DocSnapshot.data })
+            ->Js.Array2.map(doc => ({ id: doc->DocSnapshot.id, data: doc->DocSnapshot.preview_data }: Firestore.preview_with_id))
             ->Some
         } else {
             None
         }
+    }
+}
+
+let fetch_post_by_id = async (post_id: string): option<Firestore.blogpost_with_id> => {
+    open Firebase
+    open Firestore
+
+    // creates Firebase app instance
+    let app = initialize_app(firebase_config)
+    // creates Firestore instance
+    let db = get_firestore(app)
+    // gets the snapshot
+    let q = doc(db, "posts", post_id)
+    let doc_snap = await get_doc(q)
+    if doc_snap->DocSnapshot.exists {
+        { id: doc_snap->DocSnapshot.id, data: doc_snap->DocSnapshot.blogpost_data }->Some
+    } else {
+        None
     }
 }

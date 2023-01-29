@@ -1,10 +1,10 @@
 type code_theme = Light | Dark
 
 type state = {
-    last_posts: array<Firestore.doc_with_id>,
-    set_last_posts: (array<Firestore.doc_with_id> => array<Firestore.doc_with_id>) => unit,
-    featured_post: option<Firestore.doc_with_id>,
-    set_featured_post: (option<Firestore.doc_with_id> => option<Firestore.doc_with_id>) => unit,
+    last_posts: array<Firestore.preview_with_id>,
+    set_last_posts: (array<Firestore.preview_with_id> => array<Firestore.preview_with_id>) => unit,
+    featured_post: option<Firestore.preview_with_id>,
+    set_featured_post: (option<Firestore.preview_with_id> => option<Firestore.preview_with_id>) => unit,
     code_theme: code_theme,
     set_code_theme: (code_theme => code_theme) => unit
 }
