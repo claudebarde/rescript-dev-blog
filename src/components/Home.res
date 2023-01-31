@@ -5,13 +5,13 @@ let make = () => {
     React.useEffect0(() => {
         let fetch_docs = async () => {
             // fetches featured article
-            let featured_post = switch await Utils.fetch_preview_featured() {
+            let featured_post = switch await Firestore.fetch_preview_featured() {
                 | data => data
                 | exception JsError(_) => None
             }
             context.set_featured_post(_ => featured_post)
             // fetches previews
-            let docs = switch await Utils.fetch_previews(4) {
+            let docs = switch await Firestore.fetch_previews(4) {
                 | data => switch data {
                     | None => []
                     | Some(val) => val

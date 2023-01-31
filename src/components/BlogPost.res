@@ -57,7 +57,7 @@ let make = (~id: string) => {
     React.useEffect0(() => {
         let init = async () => {
             // fetches post details
-            let details = switch await Utils.fetch_preview(id) {
+            let details = switch await Firestore.fetch_preview(id) {
                 | data => data
                 | exception JsError(_) => None
             }
@@ -152,7 +152,7 @@ let make = (~id: string) => {
                             let markdown = 
                                 if images->Js.Array2.length > 0 {
                                     // fetches the picture URLs
-                                    let pictures = switch await Utils.fetch_pictures(id, images) {
+                                    let pictures = switch await Firestore.fetch_pictures(id, images) {
                                         | data => data
                                         | exception JsError(_) => None
                                     }
@@ -187,8 +187,8 @@ let make = (~id: string) => {
                             set_markdown(_ => Some(markdown))  
 
                             // setting up the interval for the Intersection Observer API
-                            let interval = Utils.set_interval(() => {
-                                open Utils
+                            let interval = Browser.set_interval(() => {
+                                open Browser
                                 switch document->query_selector(".blogpost_body")->Js.Nullable.toOption {
                                     | None => "No .blogpost_body"->Js.log
                                     | Some(_) => set_current_p_title(_ => Some(""))
@@ -205,7 +205,7 @@ let make = (~id: string) => {
 
         Some(() => {
             if markdown_rendered_check.current > 0.0 {
-                Utils.clear_interval(markdown_rendered_check.current)
+                Browser.clear_interval(markdown_rendered_check.current)
             }
         })
     })
@@ -214,9 +214,9 @@ let make = (~id: string) => {
         if markdown_rendered_check.current > 0.0 {
             switch current_p_title {
             | None => {
-                let _ = Utils.clear_interval(markdown_rendered_check.current)
+                open Browser
+                let _ = clear_interval(markdown_rendered_check.current)
                 let _ = {
-                    open Utils
                     switch document->query_selector(".blogpost_body")->Js.Nullable.toOption {
                         | None => "No .blogpost_body"->Js.log
                         | Some(root) => {
@@ -257,7 +257,7 @@ let make = (~id: string) => {
                                             // loads related articles
                                             if p_title === "Related articles" {
                                                 let fetch_related_articles = async (tags) => {
-                                                    let articles = switch await Utils.fetch_previews_by_tags(tags, true) {
+                                                    let articles = switch await Firestore.fetch_previews_by_tags(tags, true) {
                                                         | None => []
                                                         | Some(articles) => articles
                                                     }
@@ -367,7 +367,7 @@ let make = (~id: string) => {
                                     <span>{"Share"->React.string}</span>
                                     <Utils.TwitterShare 
                                         url={
-                                            open Utils
+                                            open Browser
                                             Window.window->Window.location->Window.href
                                         }
                                         title={post.data.title ++ " by @claudebarde on MostSignificantBit\n"}
@@ -377,7 +377,7 @@ let make = (~id: string) => {
                                     </Utils.TwitterShare>
                                     <Utils.LinkedinShare 
                                         url={
-                                            open Utils
+                                            open Browser
                                             Window.window->Window.location->Window.href
                                         }
                                         title={post.data.title ++ " by @claudebarde\n"}
@@ -388,7 +388,7 @@ let make = (~id: string) => {
                                     </Utils.LinkedinShare>
                                     <Utils.FacebookShare 
                                         url={
-                                            open Utils
+                                            open Browser
                                             Window.window->Window.location->Window.href
                                         }
                                         quote={post.data.title ++ " by @claudebarde\n"}

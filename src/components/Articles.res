@@ -8,11 +8,11 @@ let make = (~tag: option<string>) => {
                 switch tag {
                     | Some(tag) => {
                         // articles with a tag in common
-                        await Utils.fetch_previews_by_tags([tag], false)
+                        await Firestore.fetch_previews_by_tags([tag], false)
                     }
                     | None => {
                         // all the articles
-                        await Utils.fetch_previews(10)
+                        await Firestore.fetch_previews(10)
                     }
                 }
             set_docs(_ => docs)
