@@ -54,6 +54,15 @@ let make = (~id: string) => {
         scroll_direction.current = new_scroll_direction
     }
 
+    let copy_code = async (code: string) => {
+        open Browser
+        open Window
+        open Navigator
+        open Clipboard
+
+        await window->navigator->clipboard->write_text(code)
+    }
+
     React.useEffect0(() => {
         let init = async () => {
             // fetches post details
@@ -453,7 +462,9 @@ let make = (~id: string) => {
                                                             | Some(lang) => 
                                                                 <div className="blogpost__code-block">
                                                                     <div className="blogpost__code-block__buttons">
-                                                                        <button title="Copy">
+                                                                        <button 
+                                                                            title="Copy"
+                                                                        >
                                                                             <span className="material-symbols-outlined">
                                                                                 {"content_copy"->React.string}
                                                                             </span>
@@ -479,7 +490,7 @@ let make = (~id: string) => {
                                                                         </button>
                                                                     </div>
                                                                     <Utils.SyntaxHighlighter 
-                                                                        language=lang 
+                                                                        language={if lang === "svelte" { "javascript" } else { lang }} 
                                                                         style={
                                                                             switch context.code_theme {
                                                                                 | Light => Utils.SyntaxHighlighterTheme.material_light

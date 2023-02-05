@@ -10,7 +10,8 @@ module SyntaxHighlighterTheme = {
 }
 
 module SyntaxHighlighter = {
-    @react.component @module("react-syntax-highlighter")
+    @react.component 
+    @module("react-syntax-highlighter")
     external make: (
         ~children: React.element,
         ~language: string,
@@ -29,7 +30,8 @@ module Markdown = {
         code: code_args => React.element
     }
 
-    @react.component @module("react-markdown")
+    @react.component 
+    @module("react-markdown")
     external make: (
             ~children: React.element, 
             ~linkTarget: option<string>, 

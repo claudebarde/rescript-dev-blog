@@ -67,7 +67,7 @@ let make = () => {
                     | Some(post) => {
                         <>
                             <h1>{"Featured article"->React.string}</h1>
-                            <div className="home__blogposts-preview">
+                            <div className="blogposts-preview">
                                 <BlogPostPreview key=post.id post preview_pos=0 has_animation=true />
                             </div>
                         </>
@@ -76,13 +76,11 @@ let make = () => {
                 }
             }
             <h1>{"Latest posts"->React.string}</h1>
-            <div className="home__blogposts-preview">
-                {
-                    context.last_posts
-                    ->Js.Array2.mapi((post, index) => <BlogPostPreview key=post.id post preview_pos=index has_animation=true />)
-                    ->React.array
-                }
-            </div>
+            {
+                context.last_posts
+                ->Js.Array2.mapi((post, index) => <BlogPostPreview key=post.id post preview_pos=index has_animation=true />)
+                ->React.array
+            }
         </div>
     }
     

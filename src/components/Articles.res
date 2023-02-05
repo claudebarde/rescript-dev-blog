@@ -33,21 +33,19 @@ let make = (~tag: option<string>) => {
                 ->React.string
             }
         </h1>
-        <div className="home__blogposts-preview">
-            {
-                switch docs {
-                    | Some(articles) => {
-                        open Firestore
+        {
+            switch docs {
+                | Some(articles) => {
+                    open Firestore
 
-                        articles
-                        ->Js.Array2.map(article => {
-                            <BlogPostPreview key=article.id post=article preview_pos=0 has_animation=false />
-                        })
-                        ->React.array
-                    }
-                    | None => <p>{"No article"->React.string}</p>
+                    articles
+                    ->Js.Array2.map(article => {
+                        <BlogPostPreview key=article.id post=article preview_pos=0 has_animation=false />
+                    })
+                    ->React.array
                 }
+                | None => <p>{"No article"->React.string}</p>
             }
-        </div>
+        }
     </div>
 }

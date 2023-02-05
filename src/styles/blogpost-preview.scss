@@ -33,11 +33,7 @@
 
   &:hover {
     box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.4);
-    width: 73%;
-
-    .blogpost-preview__details {
-      width: 92%;
-    }
+    padding: 22px;
 
     .blogpost-preview__image img {
       -webkit-filter: grayscale(0);

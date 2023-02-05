@@ -1,10 +1,24 @@
 module Window = {
     type t = Dom.window
     type location = { href: string }
+
+    module Navigator = {
+        type t
+
+        module Clipboard = {
+            type t
+
+            // @send external read_text: Navigator.t => promise<string> = "readText"
+            @send external write_text: (t, string) => promise<unit> = "writeText"
+        }
+
+        @get external clipboard: t => Clipboard.t = "clipboard"
+    }
     
     @val external window: t = "window"
     @get external location: t => location = "location"
     @get external href: location => string = "href"
+    @get external navigator: t => Navigator.t = "navigator"
 }
 
 module Dom_element = {
@@ -32,6 +46,7 @@ module Dom_element = {
 @val external document: Dom.document = "document"
 @send external query_selector: ('a, string) => Js.Nullable.t<Dom_element.t> = "querySelector"
 @send external query_selector_all: ('a, string) => Js.Array2.array_like<Dom_element.t> = "querySelectorAll"
+@send external closest: (Dom_element.t, string) => Js.Nullable.t<Dom_element.t> = "closest"
 @val external set_interval: (unit => unit, int) => float = "setInterval"
 @val external clear_interval: float => unit = "clearInterval"
 @val external set_timeout: (unit => unit, int) => float = "setTimeout"
