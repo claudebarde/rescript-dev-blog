@@ -16,29 +16,17 @@
 }
 
 .blogpost-preview {
-  background-color: white;
+  @include blogpost-preview;
+
   display: grid;
   grid-template-columns: 40% 60%;
   gap: 20px;
   width: 70%;
   min-height: 200px;
-  padding: 20px;
   box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
-  transition: 0.3s;
 
-  &.animate {
-    animation: slide-in-right 1s forwards;
-    opacity: 0;
-  }
-
-  &:hover {
-    box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.4);
+  .home &:hover {
     padding: 22px;
-
-    .blogpost-preview__image img {
-      -webkit-filter: grayscale(0);
-      filter: grayscale(0);
-    }
   }
 
   .blogpost-preview__image {

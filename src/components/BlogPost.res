@@ -427,28 +427,34 @@ let make = (~id: string) => {
                                 {
                                     (details.data.timestamp.seconds *. 1000.0)
                                     ->Js.Date.fromFloat
-                                    ->Js.Date.toLocaleString
+                                    ->Js.Date.toLocaleDateString
                                     ->React.string
                                 }
                             </p>
                             <img src={details.data.header} alt="header" />
-                            <div className="blogpost__content">
-                                <p>{"Content"->React.string}</p>
-                                <ul>
-                                    {
-                                        titles
-                                        ->Js.Array2.map(
-                                            title => 
-                                                <li key=title>
-                                                    <a href={"#" ++ title->title_to_anchor}>
-                                                        {title->React.string}
-                                                    </a>
-                                                </li>
-                                        )
-                                        ->React.array
-                                    }
-                                </ul>
-                            </div>
+                            {
+                                if titles->Js.Array2.length > 0 {
+                                    <div className="blogpost__content">
+                                        <p>{"Content"->React.string}</p>
+                                        <ul>
+                                            {
+                                                titles
+                                                ->Js.Array2.map(
+                                                    title => 
+                                                        <li key=title>
+                                                            <a href={"#" ++ title->title_to_anchor}>
+                                                                {title->React.string}
+                                                            </a>
+                                                        </li>
+                                                )
+                                                ->React.array
+                                            }
+                                        </ul>
+                                    </div>
+                                } else {
+                                    React.null
+                                }
+                            }
                             <Utils.Markdown 
                                 linkTarget=Some("_blank") 
                                 className=Some("blogpost_body")
@@ -462,13 +468,13 @@ let make = (~id: string) => {
                                                             | Some(lang) => 
                                                                 <div className="blogpost__code-block">
                                                                     <div className="blogpost__code-block__buttons">
-                                                                        <button 
-                                                                            title="Copy"
-                                                                        >
-                                                                            <span className="material-symbols-outlined">
-                                                                                {"content_copy"->React.string}
-                                                                            </span>
-                                                                        </button>
+                                                                        // <button 
+                                                                        //     title="Copy"
+                                                                        // >
+                                                                        //     <span className="material-symbols-outlined">
+                                                                        //         {"content_copy"->React.string}
+                                                                        //     </span>
+                                                                        // </button>
                                                                         <button 
                                                                             title="Light mode"
                                                                             onClick={_ => {

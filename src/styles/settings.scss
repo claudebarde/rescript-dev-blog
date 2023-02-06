@@ -22,3 +22,30 @@ $font-size: 20px;
 $bg-color: $orange-lighten5;
 $tezos-blue: #0c60ff;
 $header-footer-padding: 10px;
+
+@mixin blogpost-preview {
+  background-color: white;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 20px;
+  transition: 0.3s;
+
+  &.animate {
+    animation: slide-in-right 1s forwards;
+    opacity: 0;
+  }
+
+  &:hover {
+    box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.4);
+
+    .blogpost-preview__image img {
+      -webkit-filter: grayscale(0);
+      filter: grayscale(0);
+    }
+  }
+}
